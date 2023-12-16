@@ -49,7 +49,7 @@ typedef struct aresta{
 } Aresta;
 
 typedef struct elemento {
-    char *nomeTecOrigem;
+    char *nomeTec;
     int grupo;
     int grauEntrada;
     int grauSaida;
@@ -58,11 +58,13 @@ typedef struct elemento {
     struct elemento *proxElem;
 } Vertice;
 
+
 typedef struct {
     int numVertices;
     int numArestas;
     Vertice *primeiroElem;
 } Grafo;
+
 
 /***************************************************************************************************
  *                                Funções do trabalho introdutório
@@ -81,6 +83,6 @@ int leRegistroBinario(FILE *p, Registro *r, char *cAux);
 Grafo *criaGrafo();
 
 // Função que adiociona um registro no grafo
-void adicionaRegistro(Registro *r, Grafo *grafo, Vertice *v);
+void adicionaRegistro(Registro *r, Grafo *grafo);
 
 void imprimeGrafo(Grafo *grafo);
