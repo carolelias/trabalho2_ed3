@@ -86,3 +86,5 @@ Grafo *criaGrafo();
 void adicionaRegistro(Registro *r, Grafo *grafo);
 
 void imprimeGrafo(Vertice *v);
+
+void liberaGrafo(Grafo *grafo);

@@ -23,33 +23,36 @@ void geraGrafo(char *arq1) {
     // Criando o grafo
     Grafo *grafo = criaGrafo();
 
-    // printf("prox rrn do arquivo de dados  = %d", entrada->rC.proxRRN);
-
     //Lendo os registros do arquivo de dados
-    for(int i = 0; i < 1; i++) {
+    for(int i = 0; i < 2; i++) {
         if(leRegistroBinario(entrada->p, rAux, cAux) == 0) {
-            //printf("\nNome tecnologia Origem %d = %s     / tamanho  = %d", i, rAux->nomeTecOrigem.nome, rAux->nomeTecOrigem.tam);
-            //printf("\nNome tecnologia Destino %d = %s     / tamanho  = %d", i, rAux->nomeTecDestino.nome, rAux->nomeTecDestino.tam);
+            // printf("\n\nNome tecnologia Origem %d = %s     / tamanho  = %d", i, rAux->nomeTecOrigem.nome, rAux->nomeTecOrigem.tam);
+            // printf("\nNome tecnologia Destino %d = %s     / tamanho  = %d\n", i, rAux->nomeTecDestino.nome, rAux->nomeTecDestino.tam);
 
             // Se nenhuma das tecnologias for nula, adiciona o registro no grafo
             if((rAux->nomeTecOrigem.nome[0] != '$') && (rAux->nomeTecDestino.nome[0] != '$')) {
                 adicionaRegistro(rAux, grafo);
             }
-            
+            // printf("\nvertice 1 = %s", grafo->primeiroElem->nomeTec);
+            // printf("\nvertice 2 = %s", grafo->primeiroElem->proxElem->nomeTec);            
         }
     }
 
-    // printf("\n\n\n\nGRAFO\n\nPrimeiro vertice = %s", grafo->primeiroElem->nomeTec);
-    // printf("\n\nSegundo vertice = %s", grafo->primeiroElem->proxElem->nomeTec);
-    // printf("\n\n\nAresta = %s", grafo->primeiroElem->proxElem->listaLinear->nomeTecDestino);
+    //printf("\nGRAFO\nPrimeiro vertice = %s", grafo->primeiroElem->nomeTec);
+    // printf("\nSegundo vertice = %s", grafo->primeiroElem->proxElem->nomeTec);
+    // printf("\nTerceiro vertice = %s", grafo->primeiroElem->proxElem->proxElem->nomeTec);
+    // printf("\nAresta = %s", grafo->primeiroElem->proxElem->listaLinear->nomeTecDestino);
+    // if(grafo->primeiroElem->proxElem->listaLinear->proxAresta == NULL) {
+    //     printf("\nEm teoria era pra entrar aqui\n\n");
+    // }    
 
 
     // Imprimindo o grafo
     imprimeGrafo(grafo->primeiroElem);
 
+    liberaGrafo(grafo);
     free(cAux);
     free(rAux);
-    free(grafo);
     free(entrada);
     fclose(p);
 }
