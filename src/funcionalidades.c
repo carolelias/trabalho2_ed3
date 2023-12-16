@@ -26,16 +26,26 @@ void geraGrafo(char *arq1) {
     // printf("prox rrn do arquivo de dados  = %d", entrada->rC.proxRRN);
 
     //Lendo os registros do arquivo de dados
-    for(int i = 0; i < entrada->rC.proxRRN; i++) {
+    for(int i = 0; i < 1; i++) {
         if(leRegistroBinario(entrada->p, rAux, cAux) == 0) {
-            // printf("\nNome tecnologia Origem %d = %s", i, rAux->nomeTecOrigem.nome);
-            //adiciona o registro no grafo
-            adicionaRegistro(rAux, grafo);
-            // Imprimindo o grafo
-            imprimeGrafo(grafo);
+            //printf("\nNome tecnologia Origem %d = %s     / tamanho  = %d", i, rAux->nomeTecOrigem.nome, rAux->nomeTecOrigem.tam);
+            //printf("\nNome tecnologia Destino %d = %s     / tamanho  = %d", i, rAux->nomeTecDestino.nome, rAux->nomeTecDestino.tam);
+
+            // Se nenhuma das tecnologias for nula, adiciona o registro no grafo
+            if((rAux->nomeTecOrigem.nome[0] != '$') && (rAux->nomeTecDestino.nome[0] != '$')) {
+                adicionaRegistro(rAux, grafo);
+            }
+            
         }
     }
 
+    // printf("\n\n\n\nGRAFO\n\nPrimeiro vertice = %s", grafo->primeiroElem->nomeTec);
+    // printf("\n\nSegundo vertice = %s", grafo->primeiroElem->proxElem->nomeTec);
+    // printf("\n\n\nAresta = %s", grafo->primeiroElem->proxElem->listaLinear->nomeTecDestino);
+
+
+    // Imprimindo o grafo
+    imprimeGrafo(grafo->primeiroElem);
 
     free(cAux);
     free(rAux);

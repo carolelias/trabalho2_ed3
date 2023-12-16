@@ -124,16 +124,16 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
         v1->listaLinear->nomeTecDestino = r->nomeTecDestino.nome;
         v1->listaLinear->peso = r->peso;
         v1->listaLinear->proxAresta = NULL;
-        
+
         // Cria o vértice da tecnologia de destino
-        Vertice *v2 = malloc(sizeof(Vertice));
+        Vertice *v2 = malloc(sizeof(Vertice));  
         v2->nomeTec = r->nomeTecDestino.nome;
         v2->grupo = r->grupo;
         v2->grauEntrada = 1;
         v2->grauSaida = 0;
         v2->grau = 1;
         v2->listaLinear = NULL;
-
+        
         // Se os nomes das tecnologias forem iguais
         if(strcmp(r->nomeTecOrigem.nome, r->nomeTecDestino.nome) == 0) {
             free(v2);   // libera o vértice da tecnologia de destino (já que é a mesma da de origem)
@@ -148,12 +148,13 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
 
         // Se o nome da tecnologia origem for menor 
         else if(strcmp(r->nomeTecOrigem.nome, r->nomeTecDestino.nome) < 0) {
+            
             v1->proxElem = v2;          // v1 aponta para v2
             grafo->primeiroElem = v1;   // v1 é o primeiro elemento do grafo
         }
 
         // Se o nome da tecnologia de destino for menor
-        else if(strcmp(r->nomeTecOrigem.nome, r->nomeTecDestino.nome) > 0) {
+        else if(strcmp(r->nomeTecOrigem.nome, r->nomeTecDestino.nome) > 0) { 
             v2->proxElem = v1;          // v2 aponta para v1
             grafo->primeiroElem = v2;   // v2 é o primeiro elemento do grafo
             grafo->numVertices += 2;
@@ -320,25 +321,31 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
     // grafo->numArestas++;
 }
 
-void imprimeGrafo(Grafo *grafo) {
-
-    Vertice *v = grafo->primeiroElem;
-    Aresta *a;
-
-    while(v != NULL) {
-        a = v->listaLinear;
-
-        printf("%s %d %d %d %d ", v->nomeTec, v->grupo, v->grauEntrada, v->grauSaida, v->grau);
-
-
-        // roda a lista de arestas do vértice
-        while(a != NULL) {
-            printf("%s %d\n", a->nomeTecDestino, a->peso);
-            a = a->proxAresta;
-        }
-
-        v = v->proxElem;
+void imprimeArestas(Vertice *v, Aresta *a) {
+    if(a == NULL) {
+        return;
     }
+
+    printf("%s, %d, %d, %d, %d, ", v->nomeTec, v->grupo, v->grauEntrada, v->grauSaida, v->grau);
+    printf("%s, %d\n", a->nomeTecDestino, a->peso);
+
+    imprimeArestas(v, a->proxAresta);
+    return;
+}
+
+void imprimeGrafo(Vertice *v) {
+    
+    if(v == NULL) {
+        return; 
+    }
+
+    printf("\n");
+
+    // roda a lista de arestas do vértice
+    //Aresta *a = v->listaLinear;
+    imprimeArestas(v, v->listaLinear);
+
+    imprimeGrafo(v->proxElem);
 }
 
 

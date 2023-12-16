@@ -85,4 +85,4 @@ Grafo *criaGrafo();
 // Função que adiociona um registro no grafo
 void adicionaRegistro(Registro *r, Grafo *grafo);
 
-void imprimeGrafo(Grafo *grafo);
+void imprimeGrafo(Vertice *v);
