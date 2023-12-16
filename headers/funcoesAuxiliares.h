@@ -55,7 +55,7 @@ typedef struct elemento {
     int grauSaida;
     int grau;
     Aresta *listaLinear;
-    struct elem *proxElem;
+    struct elemento *proxElem;
 } Vertice;
 
 typedef struct {
@@ -82,3 +82,5 @@ Grafo *criaGrafo();
 
 // Função que adiociona um registro no grafo
 void adicionaRegistro(Registro *r, Grafo *grafo, Vertice *v);
+
+void imprimeGrafo(Grafo *grafo);

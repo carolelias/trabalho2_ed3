@@ -17,7 +17,6 @@ int main() {
     switch (funcionalidade) {
     case 8:
         scanf("%s", arq1);
-        printf("Funcionalidade ainda nao implementada\n");
         geraGrafo(arq1);
         break;
     case 9:

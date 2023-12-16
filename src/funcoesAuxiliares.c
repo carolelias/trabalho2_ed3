@@ -62,7 +62,82 @@ Grafo *criaGrafo() {
     Função recursiva que adiociona um registro no grafo
 */ 
 void adicionaRegistro(Registro *r, Grafo *grafo, Vertice *v) {
-    if(grafo->numVertices == NULL) {
+    
+    // Verifica se o grafo foi criado
+    // if(grafo->numVertices == 0) {
+    //     printf("Falha na execucao da funcionalidade.");
+    //     return;
+    // }
 
+    // Inicializa um novo vértice e todos os seus atributos
+    Vertice *novoVertice = malloc(sizeof(Vertice));
+    novoVertice->nomeTecOrigem = r->nomeTecOrigem.nome;
+    novoVertice->grupo = r->grupo;
+    novoVertice->grauEntrada = 0;
+    novoVertice->grauSaida = 0;
+    novoVertice->grau = 0;
+    novoVertice->listaLinear = NULL;
+    novoVertice->proxElem = 0;
+
+    // Adiciona o vértice no grafo
+    //verifica se o grafo está vazio, se estiver o primeiro elemento será o novo vértice
+    if(grafo->primeiroElem == NULL) {
+        grafo->primeiroElem = novoVertice;
+    } else { // se não estiver vazio, o novo vértice será adicionado no final da lista
+        //cria um vertice auxiliar
+        Vertice *aux = grafo->primeiroElem;
+        // percorre toda a lista de vértices do grafo até encontrar o último vértice
+        while(aux->proxElem != NULL) {
+            aux = aux->proxElem;
+        }
+        // adiciona o novo vértice no final da lista
+        aux->proxElem = novoVertice;
+    }
+    // incrementa o número de vértices do grafo
+    grafo->numVertices++;
+
+    // Aloca uma nova aresta
+    // aresta que liga o vértice de origem ao vértice de destino
+    Aresta *novaAresta = malloc(sizeof(Aresta));
+    novaAresta->nomeTecDestino = r->nomeTecDestino.nome;
+    novaAresta->peso = r->peso;
+    novaAresta->proxAresta = NULL;
+
+    // Adiciona a aresta na lista linear do vértice
+    //verifica se o vértice não possui nenhuma aresta, se não possuir a primeira aresta será a nova aresta
+    if(novoVertice->listaLinear == NULL) {
+        novoVertice->listaLinear = novaAresta;
+    } else {
+        // se possuir, a nova aresta será adicionada no final da lista
+        Aresta *aux = novoVertice->listaLinear;
+        // percorre toda a lista de arestas do vértice até encontrar a última aresta
+        while(aux->proxAresta != NULL) {
+            aux = aux->proxAresta;
+        }
+        aux->proxAresta = novaAresta;
+    }
+    novoVertice->grauSaida++;
+    novoVertice->grau++;
+    grafo->numArestas++;
+}
+
+void imprimeGrafo(Grafo *grafo) {
+
+    Vertice *v = grafo->primeiroElem;
+    Aresta *a;
+
+    while(v != NULL) {
+        a = v->listaLinear;
+
+        printf("%s %d %d %d %d ", v->nomeTecOrigem, v->grupo, v->grauEntrada, v->grauSaida, v->grau);
+
+
+        // roda a lista de arestas do vértice
+        while(a != NULL) {
+            printf("%s %d\n", a->nomeTecDestino, a->peso);
+            a = a->proxAresta;
+        }
+
+        v = v->proxElem;
     }
 }
