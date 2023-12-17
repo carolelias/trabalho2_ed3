@@ -202,3 +202,65 @@ void conexoGrafo(char *arq1){
 
 
 }
+
+
+//funcionalidade 12
+void caminhoMaisCurto(char *arq1) {
+    // Abrindo o arquivo de dados
+    FILE *p = fopen(arq1, "r");
+    if(p == NULL){
+        printf("Falha na execucao da funcionalidade.");
+        return;
+    }
+
+    // Alocamos espaço para um struct do arquivo de dados
+    ArquivoDados *entrada = malloc(sizeof(ArquivoDados));
+
+    // Definindo o ponteiro para o arquivo de entrada 
+    entrada->p = p;
+    leRegistroCabecalho(entrada);
+
+    Registro *rAux = malloc(sizeof(Registro));
+    char *cAux = malloc(sizeof(char));
+
+    // Criando o grafo
+    Grafo *grafo = criaGrafo();
+
+    //Lendo os registros do arquivo de dados
+    for(int i = 0; i < entrada->rC.proxRRN; i++) {
+        if(leRegistroBinario(entrada->p, rAux, cAux, i) == 0) {
+            // Se nenhuma das tecnologias for nula, adiciona o registro no grafo
+            if((rAux->nomeTecOrigem.tam != 0 && rAux->nomeTecDestino.tam != 0) && (rAux->nomeTecOrigem.nome[0] != '$' && rAux->nomeTecDestino.nome[0] != '$')) {
+                adicionaRegistro(rAux, grafo);
+            }
+        }
+    }  
+
+    // Lendo as tecnologias de origem e destino
+    char tecOrigem[20];
+    char tecDestino[20];
+
+    int n;
+    scanf("%d", &n);
+
+    for(int i = 0; i < n; i++) {
+       scanf("%s %s", tecOrigem, tecDestino);
+
+        int distancia = algoritmoDijkstra(grafo, tecOrigem, tecDestino);
+        
+        printf("%s %s: ", tecOrigem, tecDestino);
+        if(distancia == -1){
+            printf("CAMINHO INEXISTENTE.\n");
+        } else {
+            printf("%d", distancia);
+        } 
+    }
+    
+    
+
+    liberaGrafo(grafo); // desaloca todas as estruturas do grafo (ele mesmo, seus vértices, arestas, ...)
+    free(cAux);
+    free(rAux);
+    free(entrada);
+    fclose(p);  // fecha o arquivo binário
+}

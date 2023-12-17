@@ -33,8 +33,9 @@ int main() {
         conexoGrafo(arq1);
         break;     
     case 12:
-        printf("Funcionalidade ainda nao implementada\n");
-        break;                 
+        scanf("%s", arq1);
+        caminhoMaisCurto(arq1);
+        break;                   
     default:
         printf("Funcionalidade nao encontrada.");
         break;

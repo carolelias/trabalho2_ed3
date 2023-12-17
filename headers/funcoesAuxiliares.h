@@ -69,6 +69,13 @@ typedef struct{
     int* array;
 } Stack;
 
+// struct usado no algoritmo de dijkstra
+typedef struct {
+    Vertice v;
+    int distancia;
+    int visitado;
+} estruturaAux;
+
 
 /***************************************************************************************************
  *                                Funções do trabalho introdutório
@@ -100,8 +107,6 @@ void liberaGrafo(Grafo *grafo);
 
 void imprimeTecAresta(Aresta *a);
 
-void search(Grafo *grafo, char *valorCampo);
-
 void preenche_ordem(Grafo* grafo, Stack* stack, int passou[], int i);
 
 void DFS(Grafo* grafo, int passou[], int i);
@@ -115,4 +120,7 @@ void adicionarAresta(Grafo *grafo, int verticeOrigem, char *nomeTecnologiaDestin
 void DFS(Grafo* grafo,int passou[], int v);
 
 int verificaConexo(Grafo *grafo);
+
+// descobre a menor distância entre dois vértices de um grafo
+int algoritmoDijkstra(Grafo *grafo, char *tecOrigem, char *tecDestino);
 
