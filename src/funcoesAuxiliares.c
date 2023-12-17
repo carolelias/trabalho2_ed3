@@ -342,6 +342,236 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
     }
 }
 
+
+/*
+    Função recursiva que adiociona um registro no grafo transposto
+*/ 
+void adicionaRegistroTransposto(Registro *r, Grafo *grafo) { 
+    
+    // Verifica se o grafo está vazio, se estiver, o primeiro elemento será o novo vértice
+    if(grafo->primeiroElem == NULL) {
+        // Cria o vértice da tecnologia de destino
+        Vertice *v1 = malloc(sizeof(Vertice));
+        v1->nomeTec = malloc(r->nomeTecDestino.tam * sizeof(char));
+        strcpy(v1->nomeTec, r->nomeTecDestino.nome);
+        v1->grupo = r->grupo;
+        v1->grauEntrada = 0;
+        v1->grauSaida = 1;
+        v1->grau = 1;
+        v1->listaLinear = malloc(sizeof(Aresta));
+        v1->listaLinear->nomeTecDestino = malloc(r->nomeTecOrigem.tam * sizeof(char));
+        strcpy(v1->listaLinear->nomeTecDestino, r->nomeTecOrigem.nome);
+        v1->listaLinear->peso = r->peso;
+        v1->listaLinear->proxAresta = NULL;
+
+        // Cria o vértice da tecnologia de origem
+        Vertice *v2 = malloc(sizeof(Vertice));  
+        v2->nomeTec = malloc(r->nomeTecDestino.tam * sizeof(char));
+        strcpy(v2->nomeTec, r->nomeTecDestino.nome);
+        v2->grupo = r->grupo;
+        v2->grauEntrada = 1;
+        v2->grauSaida = 0;
+        v2->grau = 1;
+        v2->listaLinear = NULL;
+        
+        // Se os nomes das tecnologias forem iguais
+        if(strcmp(r->nomeTecOrigem.nome, r->nomeTecDestino.nome) == 0) {
+            free(v2);   // libera o vértice da tecnologia de destino (já que é a mesma da de origem)
+
+            // Adiciona a tecnologia de origem como primeiro vértice do grafo
+            v1->grauEntrada++;
+            v1->grau++;
+            grafo->primeiroElem = v1;
+            grafo->numVertices++;
+            grafo->numArestas++;
+        }
+
+        // Se o nome da tecnologia destino for menor 
+        else if(strcmp(r->nomeTecDestino.nome, r->nomeTecOrigem.nome) < 0) {           
+            v1->proxElem = v2;          // v1 aponta para v2
+            v2->proxElem = NULL;
+            grafo->primeiroElem = v1;   // v1 é o primeiro elemento do grafo
+            grafo->numVertices += 2;
+            grafo->numArestas++;
+        }
+
+        // Se o nome da tecnologia de origem for menor
+        else if(strcmp(r->nomeTecOrigem.nome, r->nomeTecDestino.nome) < 0) { 
+            v2->proxElem = v1;          // v2 aponta para v1
+            v1->proxElem = NULL;
+            grafo->primeiroElem = v2;   // v2 é o primeiro elemento do grafo
+            grafo->numVertices += 2;
+            grafo->numArestas++;
+        }
+
+        return;
+    } 
+
+    // Se o grafo não estiver vazio, busca se já existem vértices com os nomes da tecnologia de destino
+    Vertice *vAux = buscaVertice(grafo->primeiroElem, r->nomeTecDestino.nome);
+
+    // Se o vértice não existe e se o nome da tecnologia for o primeiro do grafo
+    if(vAux == NULL) {
+        Vertice *v1 = malloc(sizeof(Vertice));
+        v1->nomeTec = malloc(r->nomeTecDestino.tam * sizeof(char));
+        strcpy(v1->nomeTec, r->nomeTecDestino.nome);
+        v1->grau = 1;
+        v1->grauEntrada = 0;
+        v1->grauSaida = 1;
+        v1->grupo = r->grupo;
+        v1->listaLinear = malloc(sizeof(Aresta));
+        v1->listaLinear->nomeTecDestino = malloc(r->nomeTecOrigem.tam * sizeof(char));
+        strcpy(v1->listaLinear->nomeTecDestino, r->nomeTecOrigem.nome);
+        v1->listaLinear->peso = r->peso;
+        v1->listaLinear->proxAresta = NULL;
+
+        // O próximo elemento depois de v1 vai ser o vértice que até agora era o 1°
+        v1->proxElem = grafo->primeiroElem;
+
+        // O primeiro vértice do grafo passa a ser v1
+        grafo->primeiroElem = v1;
+
+        grafo->numArestas++;
+        grafo->numVertices++;
+    }
+
+    // Se o vértice já existir
+    else if(strcmp(r->nomeTecOrigem.nome, vAux->nomeTec) == 0) {
+
+        // Se o vértice ainda não tiver nenhuma aresta saindo dele
+        if(vAux->listaLinear == NULL) {
+            vAux->listaLinear = malloc(sizeof(Aresta));
+            vAux->listaLinear->nomeTecDestino = malloc(r->nomeTecOrigem.tam * sizeof(char));
+            strcpy( vAux->listaLinear->nomeTecDestino, r->nomeTecOrigem.nome);
+            vAux->listaLinear->peso = r->peso;
+            vAux->listaLinear->proxAresta = NULL;
+
+            vAux->grau++;
+            vAux->grauSaida++;
+            grafo->numArestas++;
+        }
+
+        // Se já tiver, verifica se já existe uma aresta para a tec de origem (já que é transposto)
+        else {
+            Aresta *a = buscaAresta(vAux->listaLinear, r->nomeTecOrigem.nome);
+
+            // Se a aresta for ser a primeira da lista linear de arestas:
+            if(a == NULL) {
+                Aresta *novaAresta = malloc(sizeof(Aresta));
+                novaAresta->nomeTecDestino = malloc(r->nomeTecOrigem.tam * sizeof(char));
+                strcpy(novaAresta->nomeTecDestino, r->nomeTecOrigem.nome);
+                novaAresta->peso = r->peso;
+
+                // Adicionando nova aresta na lista linear
+                novaAresta->proxAresta = vAux->listaLinear;
+                vAux->listaLinear = novaAresta;
+
+                vAux->grau++;
+                vAux->grauSaida++;
+                grafo->numArestas++;
+            }
+
+            // Se já existe uma aresta saindo da tec Destino do registro e indo para a de Origem, ele retorna
+            else if(strcmp(a->nomeTecDestino, r->nomeTecOrigem.nome) == 0) {
+                return; 
+            }
+
+            else {
+                // Se não, ele cria e adiciona uma nova aresta
+                Aresta *novaAresta = malloc(sizeof(Aresta));
+                novaAresta->nomeTecDestino = malloc(r->nomeTecOrigem.tam * sizeof(char));
+                strcpy(novaAresta->nomeTecDestino, r->nomeTecOrigem.nome);
+                novaAresta->peso = r->peso;
+
+                // Adicionando nova aresta na lista linear
+                novaAresta->proxAresta = a->proxAresta;
+                a->proxAresta = novaAresta;
+
+                vAux->grau++;
+                vAux->grauSaida++;
+                grafo->numArestas++;   
+            }
+            
+        }
+
+    }
+    
+    // se ainda não tem um vértice da tecnologia de destino do registro
+    else {  
+        Vertice *v1 = malloc(sizeof(Vertice));
+        v1->nomeTec = malloc(r->nomeTecDestino.tam * sizeof(char));
+        strcpy(v1->nomeTec, r->nomeTecDestino.nome);
+        v1->grau = 1;
+        v1->grauEntrada = 0;
+        v1->grauSaida = 1;
+        v1->grupo = r->grupo;
+        v1->listaLinear = malloc(sizeof(Aresta));
+        v1->listaLinear->nomeTecDestino = malloc(r->nomeTecOrigem.tam * sizeof(char));
+        strcpy(v1->listaLinear->nomeTecDestino, r->nomeTecOrigem.nome);
+        v1->listaLinear->peso = r->peso;
+        v1->listaLinear->proxAresta = NULL;
+
+        // O próximo elemento depois de v1
+        v1->proxElem = vAux->proxElem;
+
+        // O elemento antes de v1 aponta para ele
+        vAux->proxElem = v1;
+
+        grafo->numArestas++;
+        grafo->numVertices++;
+    }
+
+    // Agora busca pela tecnologia de origem
+    vAux = buscaVertice(grafo->primeiroElem, r->nomeTecOrigem.nome);
+    
+    // Se o vértice não existe e se o nome da tecnologia for o primeiro do grafo
+    if(vAux == NULL) {
+        Vertice *v2 = malloc(sizeof(Vertice));
+        v2->nomeTec = malloc(r->nomeTecOrigem.tam * sizeof(char));
+        strcpy(v2->nomeTec, r->nomeTecOrigem.nome);
+        v2->grau = 1;
+        v2->grauEntrada = 1;
+        v2->grauSaida = 0;
+        v2->grupo = r->grupo;
+        v2->listaLinear = NULL;
+
+        // O próximo elemento depois de v2 vai ser o vértice que até agora era o 1°
+        v2->proxElem = grafo->primeiroElem;
+
+        // O primeiro vértice do grafo passa a ser v2
+        grafo->primeiroElem = v2;
+
+        grafo->numVertices++;
+    }
+
+    // Se o vértice já existir
+    else if(strcmp(r->nomeTecOrigem.nome, vAux->nomeTec) == 0) { 
+        vAux->grupo = r->grupo;
+        vAux->grau++;
+        vAux->grauEntrada++;
+    }
+    
+    // se ainda não tem um vértice da tecnologia de origem do registro
+    else {  
+        Vertice *v2 = malloc(sizeof(Vertice));
+        v2->nomeTec = malloc(r->nomeTecOrigem.tam * sizeof(char));
+        strcpy(v2->nomeTec, r->nomeTecOrigem.nome);
+        v2->grau = 1;
+        v2->grauEntrada = 1;
+        v2->grauSaida = 0;
+        v2->grupo = r->grupo;
+        v2->listaLinear = NULL;
+
+        // O próximo elemento depois de v2
+        v2->proxElem = vAux->proxElem;
+
+        // O elemento antes de v2 aponta para ele
+        vAux->proxElem = v2;
+
+        grafo->numVertices++;
+    }
+}
+
 void imprimeArestas(Vertice *v, Aresta *a) {
     if(a == NULL) {
         return;

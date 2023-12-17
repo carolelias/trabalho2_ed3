@@ -85,6 +85,9 @@ Grafo *criaGrafo();
 // Função que adiociona um registro no grafo
 void adicionaRegistro(Registro *r, Grafo *grafo);
 
+// Função que adiociona um registro no grafo transposto
+void adicionaRegistroTransposto(Registro *r, Grafo *grafo);
+
 void imprimeGrafo(Vertice *v);
 
 void liberaGrafo(Grafo *grafo);

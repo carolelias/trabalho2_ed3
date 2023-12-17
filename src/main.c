@@ -20,7 +20,8 @@ int main() {
         geraGrafo(arq1);
         break;
     case 9:
-        printf("Funcionalidade ainda nao implementada\n");
+        scanf("%s", arq1);
+        geraGrafoTransposto(arq1);
         break;
     case 10:
         printf("Funcionalidade ainda nao implementada\n");
