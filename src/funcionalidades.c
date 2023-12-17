@@ -27,7 +27,7 @@ void geraGrafo(char *arq1) {
     for(int i = 0; i < entrada->rC.proxRRN; i++) {
         if(leRegistroBinario(entrada->p, rAux, cAux, i) == 0) {
             // Se nenhuma das tecnologias for nula, adiciona o registro no grafo
-            if((rAux->nomeTecOrigem.nome[0] != '$') && (rAux->nomeTecDestino.nome[0] != '$')) {
+            if((rAux->nomeTecOrigem.tam != 0 && rAux->nomeTecDestino.tam != 0) && (rAux->nomeTecOrigem.nome[0] != '$' && rAux->nomeTecDestino.nome[0] != '$')) {
                 adicionaRegistro(rAux, grafo);
             }
         }

@@ -82,7 +82,7 @@ Vertice *buscaVertice(Vertice *v, char *nomeTec) {
     }   
 }
 
-Aresta *buscaAresta(Aresta *a, char *nomeTec){
+Aresta *buscaAresta(Aresta *a, char *nomeTec) {
     if(a == NULL || strcmp(a->nomeTecDestino, nomeTec) > 0) {
         return NULL;
     }
@@ -176,10 +176,10 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
 
         return;
     } 
-    
+
     // Se o grafo não estiver vazio, busca se já existem vértices com os nomes da tecnologia de origem
     Vertice *vAux = buscaVertice(grafo->primeiroElem, r->nomeTecOrigem.nome);
-    
+
     // Se o vértice não existe e se o nome da tecnologia for o primeiro do grafo
     if(vAux == NULL) {
         Vertice *v1 = malloc(sizeof(Vertice));
@@ -206,7 +206,7 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
     }
 
     // Se o vértice já existir
-    else if(strcmp(r->nomeTecOrigem.nome, vAux->nomeTec) == 0) { 
+    else if(strcmp(r->nomeTecOrigem.nome, vAux->nomeTec) == 0) {
         vAux->grupo = r->grupo;
 
         // Se o vértice ainda não tiver nenhuma aresta saindo dele
@@ -226,24 +226,43 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
         else {
             Aresta *a = buscaAresta(vAux->listaLinear, r->nomeTecDestino.nome);
 
+            // Se a aresta for ser a primeira da lista linear de arestas:
+            if(a == NULL) {
+                Aresta *novaAresta = malloc(sizeof(Aresta));
+                novaAresta->nomeTecDestino = malloc(r->nomeTecDestino.tam * sizeof(char));
+                strcpy(novaAresta->nomeTecDestino, r->nomeTecDestino.nome);
+                novaAresta->peso = r->peso;
+
+                // Adicionando nova aresta na lista linear
+                novaAresta->proxAresta = vAux->listaLinear;
+                vAux->listaLinear = novaAresta;
+
+                vAux->grau++;
+                vAux->grauSaida++;
+                grafo->numArestas++;
+            }
+
             // Se já existe uma aresta saindo da tec Origem e indo para a de Destino, ele retorna
-            if(strcmp(a->nomeTecDestino, r->nomeTecDestino.nome) == 0) {
+            else if(strcmp(a->nomeTecDestino, r->nomeTecDestino.nome) == 0) {
                 return; 
             }
 
-            // Se não, ele cria e adiciona uma nova aresta
-            Aresta *novaAresta = malloc(sizeof(Aresta));
-            novaAresta->nomeTecDestino = malloc(r->nomeTecDestino.tam * sizeof(char));
-            strcpy(novaAresta->nomeTecDestino, r->nomeTecDestino.nome);
-            novaAresta->peso = r->peso;
+            else {
+                // Se não, ele cria e adiciona uma nova aresta
+                Aresta *novaAresta = malloc(sizeof(Aresta));
+                novaAresta->nomeTecDestino = malloc(r->nomeTecDestino.tam * sizeof(char));
+                strcpy(novaAresta->nomeTecDestino, r->nomeTecDestino.nome);
+                novaAresta->peso = r->peso;
 
-            // Adicionando nova aresta na lista linear
-            novaAresta->proxAresta = a->proxAresta;
-            a->proxAresta = novaAresta;
+                // Adicionando nova aresta na lista linear
+                novaAresta->proxAresta = a->proxAresta;
+                a->proxAresta = novaAresta;
 
-            vAux->grau++;
-            vAux->grauSaida++;
-            grafo->numArestas++;
+                vAux->grau++;
+                vAux->grauSaida++;
+                grafo->numArestas++;   
+            }
+            
         }
 
     }
