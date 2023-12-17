@@ -37,11 +37,11 @@ void geraGrafo(char *arq1) {
     // Imprimindo o grafo
     imprimeGrafo(grafo->primeiroElem);
 
-    //liberaGrafo(grafo);
+    liberaGrafo(grafo); // desaloca todas as estruturas do grafo (ele mesmo, seus vértices, arestas, ...)
     free(cAux);
     free(rAux);
     free(entrada);
-    fclose(p);
+    fclose(p);  // fecha o arquivo binário
 }
 
 //funcionalidade 9
@@ -79,11 +79,11 @@ void geraGrafoTransposto(char *arq1) {
     // Imprimindo o grafo
     imprimeGrafo(grafo->primeiroElem);
 
-    //liberaGrafo(grafo);
+    liberaGrafo(grafo); // desaloca todas as estruturas do grafo (ele mesmo, seus vértices, arestas, ...)
     free(cAux);
     free(rAux);
     free(entrada);
-    fclose(p);
+    fclose(p);  // fecha o arquivo binário
 }
 
 //funcionalidade 10

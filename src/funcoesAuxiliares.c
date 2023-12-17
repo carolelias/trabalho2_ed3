@@ -658,36 +658,40 @@ void imprimeGrafo(Vertice *v) {
     imprimeGrafo(v->proxElem);
 }
 
+// Função recursiva que desaloca as arestas de um vértice
 void liberaArestas(Aresta *a) {
     if(a->proxAresta != NULL) {
-        liberaArestas(a->proxAresta);
+        liberaArestas(a->proxAresta);   // liberando as próximas arestas (recursão)
     } 
 
-    free(a->nomeTecDestino);
+    // liberando a aresta atual  
     free(a);
-    printf("\nlibera aresta");
 }
 
+// Função recursiva que desaloca os vértices de um grafo
 void liberaVertices(Vertice *v) {
+    // Libera as arestas do vértice
     if(v->listaLinear != NULL) {
         liberaArestas(v->listaLinear);
     }
+
+    // Libera os próximos vértices
     if(v->proxElem != NULL) {
         liberaVertices(v->proxElem);
     }
 
-    free(v->nomeTec);
+    // Libera o vértice atual
     free(v);
-    printf("\nlibera vertice");
 }
 
+// Função que desaloca o grafo
 void liberaGrafo(Grafo *grafo) {
+
     if(grafo->primeiroElem != NULL) {
         liberaVertices(grafo->primeiroElem);
     }
 
-    printf("\naqui");
-
+    // Desaloca o grafo
     free(grafo);
 }
 
