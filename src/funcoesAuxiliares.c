@@ -741,7 +741,6 @@ int pop(Stack* stack) {
 }
 //--------------------------------------------------------------
 
-
 void preenche_ordem(Grafo* grafo, Stack* stack, int passou[], int i){
     passou[i] = 1;
 

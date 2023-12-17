@@ -156,6 +156,7 @@ void conexoGrafo(char *arq1){
     Registro *rAux = malloc(sizeof(Registro));
     char *cAux = malloc(sizeof(char));
 
+    // Criando o grafo
     Grafo *grafo = criaGrafo();
 
     //Lendo os registros do arquivo de dados
@@ -163,7 +164,7 @@ void conexoGrafo(char *arq1){
         if(leRegistroBinario(entrada->p, rAux, cAux, i) == 0) {
             // Se nenhuma das tecnologias for nula, adiciona o registro no grafo
             if((rAux->nomeTecOrigem.tam != 0 && rAux->nomeTecDestino.tam != 0) && (rAux->nomeTecOrigem.nome[0] != '$' && rAux->nomeTecDestino.nome[0] != '$')) {
-                adicionaRegistro(rAux, grafo);
+                adicionaRegistroTransposto(rAux, grafo);
             }
         }
     }
@@ -182,4 +183,6 @@ void conexoGrafo(char *arq1){
     free(rAux);
     free(entrada);
     fclose(p);  // fecha o arquivo binário
+
+
 }

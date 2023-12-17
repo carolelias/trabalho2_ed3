@@ -29,8 +29,9 @@ int main() {
         pesquisaGrafo(arq1, n);
         break;
     case 11:
-        printf("Funcionalidade ainda nao implementada\n");
-        break;       
+        scanf("%s", arq1);
+        conexoGrafo(arq1);
+        break;     
     case 12:
         printf("Funcionalidade ainda nao implementada\n");
         break;                 
