@@ -717,6 +717,15 @@ void search(Grafo *grafo, char *valorCampo){
     } 
 }
 
+void imprimeTecAresta(Aresta *a) {
+    printf("%s", a->nomeTecDestino);
+
+    if(a->proxAresta != NULL) {
+        printf(", ");
+        imprimeTecAresta(a->proxAresta); 
+    }      
+}
+
 // Funções para a pilha -----------------------------------------
 Stack* createStack(int size) {
     Stack* stack = (Stack*)malloc(sizeof(Stack));
@@ -800,6 +809,8 @@ int encontrarOuCriarVertice(Grafo *grafo, char *nomeTecnologia) {
 
     return novoIndice;
 }
+
+
 
 // Função para adicionar uma aresta ao grafo
 void adicionarAresta(Grafo *grafo, int verticeOrigem, char *nomeTecnologiaDestino, int peso, int grupo) {

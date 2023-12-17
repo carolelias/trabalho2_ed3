@@ -86,6 +86,8 @@ int leRegistroBinario(FILE *p, Registro *r, char *cAux, int RRN);
 
 Grafo *criaGrafo();
 
+Vertice *buscaVertice(Vertice *v, char *nomeTec);
+
 // Função que adiociona um registro no grafo
 void adicionaRegistro(Registro *r, Grafo *grafo);
 
@@ -95,6 +97,8 @@ void adicionaRegistroTransposto(Registro *r, Grafo *grafo);
 void imprimeGrafo(Vertice *v);
 
 void liberaGrafo(Grafo *grafo);
+
+void imprimeTecAresta(Aresta *a);
 
 void search(Grafo *grafo, char *valorCampo);
 

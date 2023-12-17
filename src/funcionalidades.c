@@ -113,17 +113,33 @@ void pesquisaGrafo(char *arq1, int n){
         if(leRegistroBinario(entrada->p, rAux, cAux, i) == 0) {
             // Se nenhuma das tecnologias for nula, adiciona o registro no grafo
             if((rAux->nomeTecOrigem.tam != 0 && rAux->nomeTecDestino.tam != 0) && (rAux->nomeTecOrigem.nome[0] != '$' && rAux->nomeTecDestino.nome[0] != '$')) {
-                adicionaRegistro(rAux, grafo);
+                adicionaRegistroTransposto(rAux, grafo);
             }
         }
     }
+
     char *valorCampo = malloc(sizeof(char));
 
     for(int i = 0; i < n; i++) {
-        scanf("%c", valorCampo);
-        scan_quote_string(valorCampo);
+        scanf("%s", valorCampo);
+        memmove(valorCampo, valorCampo + 1, strlen(valorCampo) - 2);
+        valorCampo[strlen(valorCampo) - 2] = '\0';
 
-        search(grafo, valorCampo);                
+        Vertice *v = buscaVertice(grafo->primeiroElem, valorCampo);   
+        if(v == NULL) {
+            printf("Registro Inexistente\n");
+        }
+        else if(strcmp(v->nomeTec, valorCampo) != 0) {
+            printf("Registro Inexistente\n");
+        }         
+        else if(v->listaLinear == NULL) {
+            printf("Registro Inexistente\n");
+        }
+        else {
+            printf("%s: ", valorCampo);
+            imprimeTecAresta(v->listaLinear);
+            printf("\n\n");
+        }
     }
 
 
