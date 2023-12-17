@@ -103,40 +103,58 @@ void pesquisaGrafo(char *arq1, int n){
     entrada->p = p;
     leRegistroCabecalho(entrada);
 
+    // Alocando espaço para um registro auxiliar e um char auxiliar
     Registro *rAux = malloc(sizeof(Registro));
     char *cAux = malloc(sizeof(char));
 
+    // Criando o grafo transposto
     Grafo *grafo = criaGrafo();
 
     //Lendo os registros do arquivo de dados
     for(int i = 0; i < entrada->rC.proxRRN; i++) {
+        // Lendo o registro do arquivo de dados e armazenando no registro auxiliar
         if(leRegistroBinario(entrada->p, rAux, cAux, i) == 0) {
             // Se nenhuma das tecnologias for nula, adiciona o registro no grafo
             if((rAux->nomeTecOrigem.tam != 0 && rAux->nomeTecDestino.tam != 0) && (rAux->nomeTecOrigem.nome[0] != '$' && rAux->nomeTecDestino.nome[0] != '$')) {
+                //adiciona os registros do arquivo de dados no grafo transposto transpondo as arestas
                 adicionaRegistroTransposto(rAux, grafo);
             }
         }
     }
 
+    // variável onde será armazenado o nome da tecnologia que o usuário está pesquisando
     char *valorCampo = malloc(sizeof(char));
 
+    // lê as tecnologias n vezes
     for(int i = 0; i < n; i++) {
+        // lendo a tecnologia que o usuário deseja pesquisar
         scanf("%s", valorCampo);
+        // removendo as aspas da string usando a função memmove que move o conteúdo da string para a esquerda
         memmove(valorCampo, valorCampo + 1, strlen(valorCampo) - 2);
+        // adicionando o caractere nulo no final da string para indicar o fim da string
         valorCampo[strlen(valorCampo) - 2] = '\0';
 
-        Vertice *v = buscaVertice(grafo->primeiroElem, valorCampo);   
+        // buscando o vértice que contém a tecnologia que o usuário deseja pesquisar
+        Vertice *v = buscaVertice(grafo->primeiroElem, valorCampo);  
+
+        // se o vértice correspondente a tecnologia pesquisada não existir, imprime "Registro Inexistente" 
         if(v == NULL) {
             printf("Registro Inexistente\n");
         }
+        
+        //se o vértice existir mas não tiver a tecnologia pesquisada, imprime "Registro Inexistente"
         else if(strcmp(v->nomeTec, valorCampo) != 0) {
             printf("Registro Inexistente\n");
-        }         
+        }
+
+        // se o vértice existir, mas não tiver nenhuma aresta, imprime "Registro Inexistente"   
         else if(v->listaLinear == NULL) {
             printf("Registro Inexistente\n");
         }
+        // se o vértice existir e tiver arestas, imprime as arestas
         else {
             printf("%s: ", valorCampo);
+            // imprime as arestas do vértice que contém a tecnologia pesquisada
             imprimeTecAresta(v->listaLinear);
             printf("\n\n");
         }

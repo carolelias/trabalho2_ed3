@@ -901,69 +901,69 @@ int verificaConexo(Grafo *grafo){
 }
 
 // Função para encontrar o índice do vértice com a menor distância ainda não incluído no caminho mínimo
-int menorDistancia(estruturaAux *aux, int numVertices) {
-    int min = INT_MAX;
-    int indiceMin;
-    for (int i = 0; i < numVertices; i++) {
-        if (aux[i].visitado == 0 && aux[i].distancia <= min) {
-            min = aux[i].distancia;
-            indiceMin = i;
-        }
-    }
-    return indiceMin;
-}
+// int menorDistancia(estruturaAux *aux, int numVertices) {
+//     int min = INT_MAX;
+//     int indiceMin;
+//     for (int i = 0; i < numVertices; i++) {
+//         if (aux[i].visitado == 0 && aux[i].distancia <= min) {
+//             min = aux[i].distancia;
+//             indiceMin = i;
+//         }
+//     }
+//     return indiceMin;
+// }
 
 // Retorna a menor distância entre dois vértices. Se eles não forem conectados, retorna -1
-int algoritmoDijkstra(Grafo *grafo, char *tecOrigem, char *tecDestino) {
-    estruturaAux *aux = malloc(grafo->numVertices * sizeof(estruturaAux));
+// int algoritmoDijkstra(Grafo *grafo, char *tecOrigem, char *tecDestino) {
+//     estruturaAux *aux = malloc(grafo->numVertices * sizeof(estruturaAux));
 
-    int indexOrigem = -1;
-    int indexDestino = -1;
+//     int indexOrigem = -1;
+//     int indexDestino = -1;
 
-    Vertice v = *grafo->primeiroElem;
-    for (int i = 0; i < grafo->numVertices; i++) {
-        aux[i].distancia = INT_MAX;
-        aux[i].visitado = 0;
+//     Vertice v = *grafo->primeiroElem;
+//     for (int i = 0; i < grafo->numVertices; i++) {
+//         aux[i].distancia = INT_MAX;
+//         aux[i].visitado = 0;
 
-        aux[i].v = v;
-        v = *v.proxElem;
+//         aux[i].v = v;
+//         v = *v.proxElem;
 
-        if(strcmp(aux[i].v.nomeTec, tecOrigem) == 0) {
-            indexOrigem = i;
-        }
-        if(strcmp(aux[i].v.nomeTec, tecDestino) == 0) {
-            indexDestino = i;
-        }
-    }
+//         if(strcmp(aux[i].v.nomeTec, tecOrigem) == 0) {
+//             indexOrigem = i;
+//         }
+//         if(strcmp(aux[i].v.nomeTec, tecDestino) == 0) {
+//             indexDestino = i;
+//         }
+//     }
 
-    if(indexOrigem == -1 || indexDestino == -1) {
-        return -1;
-    }
+//     if(indexOrigem == -1 || indexDestino == -1) {
+//         return -1;
+//     }
 
-    Vertice *vertices = grafo->primeiroElem;
-    for(int i = 0; i < grafo->numVertices - 1; i++) {
-        int u = menorDistancia(aux, grafo->numVertices);
-        aux[u].visitado = 1;
+//     Vertice *vertices = grafo->primeiroElem;
+//     for(int i = 0; i < grafo->numVertices - 1; i++) {
+//         int u = menorDistancia(aux, grafo->numVertices);
+//         aux[u].visitado = 1;
 
-        vertices = grafo->primeiroElem;
-        for (int j = 0; j < grafo->numVertices; j++) {
-            Aresta *aresta = vertices->listaLinear;
-            while (aresta != NULL) {
-                if (!aux[j].visitado && aresta->nomeTecDestino != NULL && strcmp(vertices->nomeTec, tecOrigem) != 0 && aux[u].distancia != INT_MAX && aux[u].distancia + aresta->peso < aux[j].distancia) {
-                    aux[j].distancia = aux[u].distancia + aresta->peso;
-                }
-                aresta = aresta->proxAresta;
-            }
-            vertices = vertices->proxElem;
-        }
-    }
+//         vertices = grafo->primeiroElem;
+//         for (int j = 0; j < grafo->numVertices; j++) {
+//             Aresta *aresta = vertices->listaLinear;
+//             while (aresta != NULL) {
+//                 if (!aux[j].visitado && aresta->nomeTecDestino != NULL && strcmp(vertices->nomeTec, tecOrigem) != 0 && aux[u].distancia != INT_MAX && aux[u].distancia + aresta->peso < aux[j].distancia) {
+//                     aux[j].distancia = aux[u].distancia + aresta->peso;
+//                 }
+//                 aresta = aresta->proxAresta;
+//             }
+//             vertices = vertices->proxElem;
+//         }
+//     }
 
-    if(aux->distancia[tecDestino] != INT_MAX) {
-        return aux->distancia[tecDestino];
-    } else {
-        return -1;
-    }
-}
+//     if(aux->distancia[tecDestino] != INT_MAX) {
+//         return aux->distancia[tecDestino];
+//     } else {
+//         return -1;
+//     }
+// }
 
 
 
