@@ -184,7 +184,7 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
             grafo->numArestas++;
         }
 
-        // Se o nome da tecnologia origem for menor 
+        // Se o nome da tecnologia origem for menor
         else if(strcmp(r->nomeTecOrigem.nome, r->nomeTecDestino.nome) < 0) {           
             v1->proxElem = v2;          // v1 aponta para v2
             v2->proxElem = NULL;
@@ -695,3 +695,184 @@ void liberaGrafo(Grafo *grafo) {
     free(grafo);
 }
 
+void search(Grafo *grafo, char *valorCampo){
+    //for (int i = 0; i < grafo->numVertices; i++){
+    // Se o grafo não estiver vazio, busca se já existem vértices com os nomes da tecnologia de origem
+    Vertice *vAux = buscaVertice(grafo->primeiroElem, valorCampo);
+    
+    if(vAux == NULL) {
+        printf("Registro Inexistente\n");
+    }
+
+    // Se o vértice já existir
+    else if(strcmp(valorCampo, vAux->nomeTec) == 0){
+        Aresta *a = buscaAresta(vAux->listaLinear, valorCampo);
+        if(a == NULL){
+            printf("Registro Inexistente\n");
+        }
+        // Se já existe uma aresta saindo da tec Origem e indo para a de Destino, ele retorna
+        else if(strcmp(a->nomeTecDestino, valorCampo) == 0) {
+            printf("achou");
+        }
+    } 
+}
+
+// Funções para a pilha -----------------------------------------
+struct Stack* createStack(int size) {
+    Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
+    stack->top = -1;
+    stack->array = (int*)malloc(size * sizeof(int));
+    return stack;
+}
+
+int isEmpty(Stack* stack) {
+    return stack->top == -1;
+}
+
+void push(Stack* stack, int item) {
+    stack->array[++stack->top] = item;
+}
+
+
+int pop(Stack* stack) {
+    if (isEmpty(stack))
+        return -1;
+    return stack->array[stack->top--];
+}
+//--------------------------------------------------------------
+void preenche_ordem(Grafo* grafo, Stack* stack, int passou[], int i){
+    passou[i] = 1;
+
+    Aresta* aresta = grafo->primeiroElem[i].listaLinear;
+    while (aresta != NULL) {
+        int destino = encontrarOuCriarVertice(grafo, aresta->nomeTecDestino);
+        if (!passou[destino]) {
+            preenche_ordem(grafo, stack, passou, destino);
+        }
+
+        aresta = aresta->proxAresta;
+    }
+
+    push(stack, i);
+}
+
+
+
+void verificaConexo(Grafo *grafo){
+    Stack* stack = (Stack*)malloc(sizeof(Stack));
+    stack->array = (int*)malloc(grafo->numVertices * sizeof(int));
+    stack->top = -1;
+
+    int* passou = (int*)malloc(grafo->numVertices * sizeof(int));
+    for (int i = 0; i < grafo->numVertices; i++) {
+        passou[i] = 0;
+    }
+
+    // Realiza a primeira passagem do algoritmo de Kosaraju
+    for (int i = 0; i < grafo->numVertices; i++) {
+        if (!passou[i]) {
+            preenche_ordem(grafo, stack, passou, i);
+        }
+    }
+
+    //cria grafo transposto
+    Grafo *grafo_transposto = criaGrafo();
+    grafo_transposto->primeiroElem = (Vertice*) malloc(sizeof(Vertice) * grafo->numVertices);
+    grafo_transposto->numVertices = grafo->numVertices;
+
+    // Adiciona os vértices ao grafo transposto
+    for (int i = 0; i < grafo->numVertices; i++) {
+        grafo_transposto->primeiroElem[i] = adicionarVerticeOrigem(grafo->primeiroElem[i].nomeTec, grafo->primeiroElem[i].grupo);
+    }
+
+    // Inverte a direção das arestas
+    for (int i = 0; i < grafo->numVertices; i++) {
+        Aresta *aux = grafo->primeiroElem[i].listaLinear;
+
+        while (aux != NULL) {
+            int posDestino = encontrarOuCriarVertice(grafo, aux->nomeTecnologiaDestino);
+            
+            adicionarAresta(grafo_transposto, posDestino, grafo->lista_vertices[i].nomeTecnologia, aux->peso, grafo->lista_vertices[posDestino].grupo);
+
+            aux = aux->proxAresta;
+        }
+    }
+
+    // Realiza a segunda passagem do algoritmo de Kosaraju
+    for (int i = 0; i < grafo->numVertices; i++) {
+        passou[i] = 0;
+    }
+
+    int numSCCs = 0; // Contador de componentes fortemente conectados
+    while (!vazio(stack)) {
+        int v = pop(stack);
+
+        if (!passou[v]) {
+            DFS(grafo_transposto, passou, v);
+            numSCCs++;
+        }
+    }
+
+    free(stack->array);
+    free(stack);
+    free(passou);
+    liberarGrafo(grafo_transposto);
+
+    return numSCCs;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    Stack* stack = createStack(grafo->numVertices);
+    int* visited = (int*)malloc(grafo->numVertices * sizeof(int));
+    for (int i = 0; i < grafo->numVertices; ++i)
+        visited[i] = 0;
+
+    for (int i = 0; i < grafo->numVertices; ++i) {
+        if (!visited[i])
+            visited[i] = 1;
+            Grafo* current = grafo->primeiroElem->listaLinear;
+            while (current != NULL) {
+                if (!visited[current->i])
+                    DFSUtil(grafo, current->i, visited, stack);
+                current = current->;
+            }
+            push(stack, i);
+    }
+
+    struct Graph* transpose = getTranspose(graph);
+
+    for (int i = 0; i < graph->vertices; ++i)
+        visited[i] = 0;
+
+    while (!isEmpty(stack)) {
+        int vertex = pop(stack);
+        if (!visited[vertex]) {
+            DFS(transpose, vertex, visited);
+            printf("\n");
+        }
+    }
+
+    free(visited);
+    free(stack);
+
+    if(i == 1){
+        printf("Sim, o grafo e fortemente conexo e possui %d componente.\n", comp);
+    }else{
+        printf("Nao, o grafo nao e fortemente conexo e possui %D componentes.\n", comp);
+    }
+}

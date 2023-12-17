@@ -11,6 +11,7 @@ int main() {
 
     int funcionalidade;
     char arq1[25];
+    int n;
 
     scanf("%d", &funcionalidade);
 
@@ -24,7 +25,8 @@ int main() {
         geraGrafoTransposto(arq1);
         break;
     case 10:
-        printf("Funcionalidade ainda nao implementada\n");
+        scanf("%s %d", arq1, &n);
+        pesquisaGrafo(arq1, n);
         break;
     case 11:
         printf("Funcionalidade ainda nao implementada\n");

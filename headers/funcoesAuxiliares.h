@@ -58,12 +58,16 @@ typedef struct elemento {
     struct elemento *proxElem;
 } Vertice;
 
-
 typedef struct {
     int numVertices;
     int numArestas;
     Vertice *primeiroElem;
 } Grafo;
+
+typedef struct{
+    int top;
+    int* array;
+} Stack;
 
 
 /***************************************************************************************************
@@ -91,3 +95,5 @@ void adicionaRegistroTransposto(Registro *r, Grafo *grafo);
 void imprimeGrafo(Vertice *v);
 
 void liberaGrafo(Grafo *grafo);
+
+void search(Grafo *grafo, char *valorCampo);
