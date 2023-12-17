@@ -15,4 +15,4 @@ void pesquisaGrafo(char *arq1, int n);
 void conexoGrafo(char *arq1);
 
 // funcionalidade 12
-void caminhoMaisCurto(char *arq1)
+void caminhoMaisCurto(char *arq1);
