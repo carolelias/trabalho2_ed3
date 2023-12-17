@@ -169,7 +169,13 @@ void conexoGrafo(char *arq1){
     }
 
     // função para verificar se o grafo é fortemente conexo
-    verificaConexo(grafo);
+    int aux = verificaConexo(grafo);
+
+    if(aux == 1){
+        printf("Sim, o grafo e fortemente conexo e possui %d componente.\n", aux);
+    }else{
+        printf("Nao, o grafo nao e fortemente conexo e possui %d componentes.\n", aux);
+    }
 
     liberaGrafo(grafo); // desaloca todas as estruturas do grafo (ele mesmo, seus vértices, arestas, ...)
     free(cAux);

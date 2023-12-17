@@ -97,3 +97,18 @@ void imprimeGrafo(Vertice *v);
 void liberaGrafo(Grafo *grafo);
 
 void search(Grafo *grafo, char *valorCampo);
+
+void preenche_ordem(Grafo* grafo, Stack* stack, int passou[], int i);
+
+void DFS(Grafo* grafo, int passou[], int i);
+
+Vertice addVerticeOrigem(char *nomeTecnologia, int grupo);
+
+int encontrarOuCriarVertice(Grafo *grafo, char *nomeTecnologia);
+
+void adicionarAresta(Grafo *grafo, int verticeOrigem, char *nomeTecnologiaDestino, int peso, int grupo);
+
+void DFS(Grafo* grafo,int passou[], int v);
+
+int verificaConexo(Grafo *grafo);
+

@@ -718,8 +718,8 @@ void search(Grafo *grafo, char *valorCampo){
 }
 
 // Funções para a pilha -----------------------------------------
-struct Stack* createStack(int size) {
-    Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
+Stack* createStack(int size) {
+    Stack* stack = (Stack*)malloc(sizeof(Stack));
     stack->top = -1;
     stack->array = (int*)malloc(size * sizeof(int));
     return stack;
@@ -740,6 +740,8 @@ int pop(Stack* stack) {
     return stack->array[stack->top--];
 }
 //--------------------------------------------------------------
+
+
 void preenche_ordem(Grafo* grafo, Stack* stack, int passou[], int i){
     passou[i] = 1;
 
@@ -756,9 +758,98 @@ void preenche_ordem(Grafo* grafo, Stack* stack, int passou[], int i){
     push(stack, i);
 }
 
+Vertice addVerticeOrigem(char *nomeTecnologia, int grupo) {
+    Vertice novoVertice;
 
+    // Alocar memória para o nome da tecnologia
+    novoVertice.nomeTec = strdup(nomeTecnologia);
 
-void verificaConexo(Grafo *grafo){
+    // Inicializar os campos do novo vértice
+    novoVertice.grupo = grupo;
+    novoVertice.grauEntrada = 0;
+    novoVertice.grauSaida = 0;
+    novoVertice.grau = 0;
+    novoVertice.listaLinear = NULL;
+    novoVertice.proxElem = 0;
+
+    return novoVertice;
+}
+
+// Função para encontrar ou criar um vértice com o nome especificado
+int encontrarOuCriarVertice(Grafo *grafo, char *nomeTecnologia) {
+    for (int i = 0; i < grafo->numVertices; i++) {
+        if (grafo->primeiroElem[i].nomeTec != NULL &&
+            strcmp(grafo->primeiroElem[i].nomeTec, nomeTecnologia) == 0) {
+            return i;  // Vértice já existe, retorna seu índice
+        }
+    }
+
+    // Vértice não encontrado, criar um novo
+    grafo->numVertices++;
+    grafo->primeiroElem = (Vertice *)realloc(grafo->primeiroElem, grafo->numVertices * sizeof(Vertice));
+    int novoIndice = grafo->numVertices - 1;
+    grafo->primeiroElem[novoIndice].nomeTec = strdup(nomeTecnologia);
+    
+    // Inicializar os campos do novo vértice
+    grafo->primeiroElem[novoIndice].grupo = -4;
+    grafo->primeiroElem[novoIndice].grauEntrada = 0;
+    grafo->primeiroElem[novoIndice].grauSaida = 0;
+    grafo->primeiroElem[novoIndice].grau = 0;
+    grafo->primeiroElem[novoIndice].listaLinear = NULL;
+    grafo->primeiroElem[novoIndice].listaLinear->proxAresta = NULL;
+    // grafo->primeiroElem[novoIndice].proxElem = 0;
+
+    return novoIndice;
+}
+
+// Função para adicionar uma aresta ao grafo
+void adicionarAresta(Grafo *grafo, int verticeOrigem, char *nomeTecnologiaDestino, int peso, int grupo) {
+    // Encontrar ou criar o vértice destino
+    
+    int verticeDestino = encontrarOuCriarVertice(grafo, nomeTecnologiaDestino);
+    
+    Aresta *novaAresta = (Aresta *)malloc(sizeof(Aresta));
+    novaAresta->nomeTecDestino = strdup(nomeTecnologiaDestino);
+    novaAresta->peso = peso;
+    novaAresta->proxAresta = NULL;
+
+    Aresta *ultimaAresta = grafo->primeiroElem[verticeOrigem].listaLinear;
+   
+    if (ultimaAresta == NULL) {
+        grafo->primeiroElem[verticeOrigem].listaLinear = novaAresta;
+    } else {
+    // Se a lista não estiver vazia, percorrer até o final e adicionar a nova aresta
+        while (ultimaAresta->proxAresta != NULL) {
+            ultimaAresta = ultimaAresta->proxAresta;
+        }
+
+        ultimaAresta->proxAresta = novaAresta;
+    }
+
+    grafo->primeiroElem[verticeOrigem].grupo = grupo;
+    // grafo->primeiroElem[verticeOrigem].numArestas++;
+    grafo->numArestas++;
+    grafo->primeiroElem[verticeOrigem].grauSaida++;
+    grafo->primeiroElem[verticeOrigem].grau++;
+    grafo->primeiroElem[verticeDestino].grauEntrada++;
+    grafo->primeiroElem[verticeDestino].grau++;
+
+}
+
+void DFS(Grafo* grafo,int passou[], int v) {
+    passou[v] = 1;
+
+    Aresta* aresta = grafo->primeiroElem[v].listaLinear;
+    while (aresta != NULL) {
+        int vizinho = encontrarOuCriarVertice(grafo, aresta->nomeTecDestino);
+        if (!passou[vizinho]) {
+            DFS(grafo, passou, vizinho);
+        }
+        aresta = aresta->proxAresta;
+    }
+}
+
+int verificaConexo(Grafo *grafo){
     Stack* stack = (Stack*)malloc(sizeof(Stack));
     stack->array = (int*)malloc(grafo->numVertices * sizeof(int));
     stack->top = -1;
@@ -782,7 +873,7 @@ void verificaConexo(Grafo *grafo){
 
     // Adiciona os vértices ao grafo transposto
     for (int i = 0; i < grafo->numVertices; i++) {
-        grafo_transposto->primeiroElem[i] = adicionarVerticeOrigem(grafo->primeiroElem[i].nomeTec, grafo->primeiroElem[i].grupo);
+        grafo_transposto->primeiroElem[i] = addVerticeOrigem(grafo->primeiroElem[i].nomeTec, grafo->primeiroElem[i].grupo);
     }
 
     // Inverte a direção das arestas
@@ -790,9 +881,9 @@ void verificaConexo(Grafo *grafo){
         Aresta *aux = grafo->primeiroElem[i].listaLinear;
 
         while (aux != NULL) {
-            int posDestino = encontrarOuCriarVertice(grafo, aux->nomeTecnologiaDestino);
+            int posDestino = encontrarOuCriarVertice(grafo, aux->nomeTecDestino);
             
-            adicionarAresta(grafo_transposto, posDestino, grafo->lista_vertices[i].nomeTecnologia, aux->peso, grafo->lista_vertices[posDestino].grupo);
+            adicionarAresta(grafo_transposto, posDestino, grafo->primeiroElem[i].nomeTec, aux->peso, grafo->primeiroElem[posDestino].grupo);
 
             aux = aux->proxAresta;
         }
@@ -804,7 +895,7 @@ void verificaConexo(Grafo *grafo){
     }
 
     int numSCCs = 0; // Contador de componentes fortemente conectados
-    while (!vazio(stack)) {
+    while (!isEmpty(stack)) {
         int v = pop(stack);
 
         if (!passou[v]) {
@@ -816,63 +907,63 @@ void verificaConexo(Grafo *grafo){
     free(stack->array);
     free(stack);
     free(passou);
-    liberarGrafo(grafo_transposto);
+    liberaGrafo(grafo_transposto);
 
     return numSCCs;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    Stack* stack = createStack(grafo->numVertices);
-    int* visited = (int*)malloc(grafo->numVertices * sizeof(int));
-    for (int i = 0; i < grafo->numVertices; ++i)
-        visited[i] = 0;
-
-    for (int i = 0; i < grafo->numVertices; ++i) {
-        if (!visited[i])
-            visited[i] = 1;
-            Grafo* current = grafo->primeiroElem->listaLinear;
-            while (current != NULL) {
-                if (!visited[current->i])
-                    DFSUtil(grafo, current->i, visited, stack);
-                current = current->;
-            }
-            push(stack, i);
-    }
-
-    struct Graph* transpose = getTranspose(graph);
-
-    for (int i = 0; i < graph->vertices; ++i)
-        visited[i] = 0;
-
-    while (!isEmpty(stack)) {
-        int vertex = pop(stack);
-        if (!visited[vertex]) {
-            DFS(transpose, vertex, visited);
-            printf("\n");
-        }
-    }
-
-    free(visited);
-    free(stack);
-
-    if(i == 1){
-        printf("Sim, o grafo e fortemente conexo e possui %d componente.\n", comp);
-    }else{
-        printf("Nao, o grafo nao e fortemente conexo e possui %D componentes.\n", comp);
-    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//     Stack* stack = createStack(grafo->numVertices);
+//     int* visited = (int*)malloc(grafo->numVertices * sizeof(int));
+//     for (int i = 0; i < grafo->numVertices; ++i)
+//         visited[i] = 0;
+
+//     for (int i = 0; i < grafo->numVertices; ++i) {
+//         if (!visited[i])
+//             visited[i] = 1;
+//             Grafo* current = grafo->primeiroElem->listaLinear;
+//             while (current != NULL) {
+//                 if (!visited[current->i])
+//                     DFSUtil(grafo, current->i, visited, stack);
+//                 current = current->;
+//             }
+//             push(stack, i);
+//     }
+
+//     struct Graph* transpose = getTranspose(graph);
+
+//     for (int i = 0; i < graph->vertices; ++i)
+//         visited[i] = 0;
+
+//     while (!isEmpty(stack)) {
+//         int vertex = pop(stack);
+//         if (!visited[vertex]) {
+//             DFS(transpose, vertex, visited);
+//             printf("\n");
+//         }
+//     }
+
+//     free(visited);
+//     free(stack);
+
+//     if(i == 1){
+//         printf("Sim, o grafo e fortemente conexo e possui %d componente.\n", comp);
+//     }else{
+//         printf("Nao, o grafo nao e fortemente conexo e possui %D componentes.\n", comp);
+//     }
+// }
