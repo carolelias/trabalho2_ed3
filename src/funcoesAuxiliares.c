@@ -14,9 +14,9 @@ void leRegistroCabecalho(ArquivoDados *arq) {
     }
 }
 
-/* Le o registro do endereço do ponteiro do arquivo e armazena do endereço fornecido */
-int leRegistroBinario(FILE *p, Registro *r, char *cAux) {
-    
+/* Le o registro do endereço do ponteiro do arquivo e armazena no endereço fornecido */
+int leRegistroBinario(FILE *p, Registro *r, char *cAux, int RRN) {
+    fseek(p, TAM_CABECALHO + TAM_REGISTRO * RRN, SEEK_SET);
     fread(&r->removido, 1, 1, p);
     if(r->removido == '1') {
         fseek(p, TAM_REGISTRO-1, SEEK_CUR);
@@ -59,12 +59,7 @@ Grafo *criaGrafo() {
 
 // Função que busca um nome da tecnologia nos vértices de um grafo
 Vertice *buscaVertice(Vertice *v, char *nomeTec) {
-    // printf("\nv = %s", v->nomeTec);
-    if(v->proxElem != NULL) {
-        // printf("--> %s", v->proxElem->nomeTec);
-    }
     if(v == NULL || strcmp(v->nomeTec, nomeTec) > 0) {
-        // printf("\nretornando nulo");
         return NULL;
     } 
     
@@ -80,11 +75,9 @@ Vertice *buscaVertice(Vertice *v, char *nomeTec) {
     Vertice *v2 = buscaVertice(v->proxElem, nomeTec);
 
     if(v2 == NULL) {
-        // printf("\nretornando v = %s", v->nomeTec);
         return v;
     }       
     else {
-        // printf("\nretornando v2 = %s", v2->nomeTec);
         return v2;
     }   
 }
@@ -124,13 +117,9 @@ Vertice *criaNovoVertice(char *nomeTec, int grupo) {
     Função recursiva que adiociona um registro no grafo
 */ 
 void adicionaRegistro(Registro *r, Grafo *grafo) { 
-    // if(grafo->primeiroElem != NULL) {
-        printf("\nGrafo da busca = %s --> %s", grafo->primeiroElem->nomeTec, grafo->primeiroElem->proxElem->nomeTec);
-    // }
     
     // Verifica se o grafo está vazio, se estiver, o primeiro elemento será o novo vértice
     if(grafo->primeiroElem == NULL) {
-        // printf("\nadicionando o primeiro vertice no grafo");
         // Cria o vértice da Tecnologia de Origem
         Vertice *v1 = malloc(sizeof(Vertice));
         v1->nomeTec = malloc(r->nomeTecOrigem.tam * sizeof(char));
@@ -189,13 +178,10 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
     } 
     
     // Se o grafo não estiver vazio, busca se já existem vértices com os nomes da tecnologia de origem
-    // printf("\nGrafo da busca = %s --> %s", grafo->primeiroElem->nomeTec, grafo->primeiroElem->proxElem->nomeTec);
     Vertice *vAux = buscaVertice(grafo->primeiroElem, r->nomeTecOrigem.nome);
-    // printf("\nVertice retornado pela busca = %s  , sendo que o primeiro elemento do grafo da busca foi %s", vAux->nomeTec, grafo->primeiroElem->nomeTec);
     
     // Se o vértice não existe e se o nome da tecnologia for o primeiro do grafo
     if(vAux == NULL) {
-        // printf("\nnome da tec de origem sera o primeiro do vertice");
         Vertice *v1 = malloc(sizeof(Vertice));
         v1->nomeTec = malloc(r->nomeTecOrigem.tam * sizeof(char));
         strcpy(v1->nomeTec, r->nomeTecOrigem.nome);
@@ -217,22 +203,23 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
 
         grafo->numArestas++;
         grafo->numVertices++;
-
-        // printf(" e ele apontara para %s", v1->proxElem->nomeTec);
     }
 
     // Se o vértice já existir
     else if(strcmp(r->nomeTecOrigem.nome, vAux->nomeTec) == 0) { 
-        // printf("\nvertice da tec Origem ja existe");
+        vAux->grupo = r->grupo;
+
         // Se o vértice ainda não tiver nenhuma aresta saindo dele
         if(vAux->listaLinear == NULL) {
-            // printf(", mas ainda nao tem nenhuma aresta");
-            // printf("\nadicionando a tec destino como primeira aresta do vertice");
             vAux->listaLinear = malloc(sizeof(Aresta));
             vAux->listaLinear->nomeTecDestino = malloc(r->nomeTecDestino.tam * sizeof(char));
             strcpy( vAux->listaLinear->nomeTecDestino, r->nomeTecDestino.nome);
             vAux->listaLinear->peso = r->peso;
             vAux->listaLinear->proxAresta = NULL;
+
+            vAux->grau++;
+            vAux->grauSaida++;
+            grafo->numArestas++;
         }
 
         // Se já tiver, verifica se já existe uma aresta para a tec de destino
@@ -241,7 +228,6 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
 
             // Se já existe uma aresta saindo da tec Origem e indo para a de Destino, ele retorna
             if(strcmp(a->nomeTecDestino, r->nomeTecDestino.nome) == 0) {
-                // printf("\nja existe aresta para a tec destino");
                 return; 
             }
 
@@ -255,17 +241,18 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
             novaAresta->proxAresta = a->proxAresta;
             a->proxAresta = novaAresta;
 
+            vAux->grau++;
+            vAux->grauSaida++;
             grafo->numArestas++;
-            // printf("\nAdicionando a aresta para tecDestino %s depois da aresta %s", a->proxAresta->nomeTecDestino, a->nomeTecDestino);
         }
 
     }
     
     // se ainda não tem um vértice da tecnologia de origem do registro
     else {  
-        // printf("\nAinda nao existe vertice da tec origem, vamos criar um");
         Vertice *v1 = malloc(sizeof(Vertice));
-        v1->nomeTec = r->nomeTecOrigem.nome;
+        v1->nomeTec = malloc(r->nomeTecOrigem.tam * sizeof(char));
+        strcpy(v1->nomeTec, r->nomeTecOrigem.nome);
         v1->grau = 1;
         v1->grauEntrada = 0;
         v1->grauSaida = 1;
@@ -284,8 +271,6 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
 
         grafo->numArestas++;
         grafo->numVertices++;
-
-        // printf("\nAdicionando o vertice da tecOrigem %s depois do vertice %s", vAux->proxElem->nomeTec, vAux->nomeTec);
     }
 
     // Agora busca pela tecnologia de destino
@@ -293,7 +278,6 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
     
     // Se o vértice não existe e se o nome da tecnologia for o primeiro do grafo
     if(vAux == NULL) {
-        // printf("\nnome da tec de destino sera o primeiro do vertice");
         Vertice *v2 = malloc(sizeof(Vertice));
         v2->nomeTec = malloc(r->nomeTecDestino.tam * sizeof(char));
         strcpy(v2->nomeTec, r->nomeTecDestino.nome);
@@ -310,26 +294,22 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
         grafo->primeiroElem = v2;
 
         grafo->numVertices++;
-
-        // printf(" e ele apontara para %s", v2->proxElem->nomeTec);
     }
 
     // Se o vértice já existir
     else if(strcmp(r->nomeTecDestino.nome, vAux->nomeTec) == 0) { 
-        // printf("\nvertice da tec Destino ja existe");
         vAux->grau++;
         vAux->grauEntrada++;
     }
     
     // se ainda não tem um vértice da tecnologia de destino do registro
     else {  
-        // printf("\nAinda nao existe vertice da tec destino, vamos criar um");
         Vertice *v2 = malloc(sizeof(Vertice));
         v2->nomeTec = malloc(r->nomeTecDestino.tam * sizeof(char));
         strcpy(v2->nomeTec, r->nomeTecDestino.nome);
         v2->grau = 1;
-        v2->grauEntrada = 0;
-        v2->grauSaida = 1;
+        v2->grauEntrada = 1;
+        v2->grauSaida = 0;
         v2->grupo = r->grupo;
         v2->listaLinear = NULL;
 
@@ -340,56 +320,25 @@ void adicionaRegistro(Registro *r, Grafo *grafo) {
         vAux->proxElem = v2;
 
         grafo->numVertices++;
-
-        // printf("\nAdicionando o vertice da tecOrigem %s depois do vertice %s", vAux->proxElem->nomeTec, vAux->nomeTec);
     }
-
-
-    // // incrementa o número de vértices do grafo
-    // grafo->numVertices++;
-
-    // // Aloca uma nova aresta
-    // // aresta que liga o vértice de origem ao vértice de destino
-    // Aresta *novaAresta = malloc(sizeof(Aresta));
-    // novaAresta->nomeTecDestino = r->nomeTecDestino.nome;
-    // novaAresta->peso = r->peso;
-    // novaAresta->proxAresta = NULL;
-
-    // // Adiciona a aresta na lista linear do vértice
-    // //verifica se o vértice não possui nenhuma aresta, se não possuir a primeira aresta será a nova aresta
-    // if(novoVertice->listaLinear == NULL) {
-    //     novoVertice->listaLinear = novaAresta;
-    // } else {
-    //     // se possuir, a nova aresta será adicionada no final da lista
-    //     Aresta *aux = novoVertice->listaLinear;
-    //     // percorre toda a lista de arestas do vértice até encontrar a última aresta
-    //     while(aux->proxAresta != NULL) {
-    //         aux = aux->proxAresta;
-    //     }
-    //     aux->proxAresta = novaAresta;
-    // }
-    // novoVertice->grauSaida++;
-    // novoVertice->grau++;
-    // grafo->numArestas++;
 }
 
 void imprimeArestas(Vertice *v, Aresta *a) {
     if(a == NULL) {
-        // printf("\naresta nula");
         return;
     }
 
-    printf("%s, %d, %d, %d, %d, ", v->nomeTec, v->grupo, v->grauEntrada, v->grauSaida, v->grau);
-    printf("%s, %d\n", a->nomeTecDestino, a->peso);
+    printf("%s %d %d %d %d ", v->nomeTec, v->grupo, v->grauEntrada, v->grauSaida, v->grau);
+    printf("%s %d\n", a->nomeTecDestino, a->peso);
 
+    if(a->proxAresta == NULL)
+        return;
     imprimeArestas(v, a->proxAresta);
     return;
 }
 
 void imprimeGrafo(Vertice *v) {
-    // printf("\nprintando vertice: ");
     if(v == NULL) {
-        // printf("\nvertice nulo");
         return; 
     }
 
@@ -400,31 +349,39 @@ void imprimeGrafo(Vertice *v) {
 
     if(v->proxElem == NULL)
         return;
+    
     imprimeGrafo(v->proxElem);
 }
 
 void liberaArestas(Aresta *a) {
-    if(a == NULL) {
-        return;
-    }
-    
-    liberaArestas(a->proxAresta);
+    if(a->proxAresta != NULL) {
+        liberaArestas(a->proxAresta);
+    } 
+
+    free(a->nomeTecDestino);
     free(a);
+    printf("\nlibera aresta");
 }
 
 void liberaVertices(Vertice *v) {
-    if(v == NULL) {
-        return;
+    if(v->listaLinear != NULL) {
+        liberaArestas(v->listaLinear);
     }
-    
-    liberaArestas(v->listaLinear);
-    liberaVertices(v->proxElem);
+    if(v->proxElem != NULL) {
+        liberaVertices(v->proxElem);
+    }
+
+    free(v->nomeTec);
     free(v);
+    printf("\nlibera vertice");
 }
 
 void liberaGrafo(Grafo *grafo) {
-    if(grafo->primeiroElem != NULL)
+    if(grafo->primeiroElem != NULL) {
         liberaVertices(grafo->primeiroElem);
+    }
+
+    printf("\naqui");
 
     free(grafo);
 }

@@ -72,7 +72,7 @@ typedef struct {
 
 void leRegistroCabecalho(ArquivoDados *arq);
 
-int leRegistroBinario(FILE *p, Registro *r, char *cAux);
+int leRegistroBinario(FILE *p, Registro *r, char *cAux, int RRN);
 
 
 
