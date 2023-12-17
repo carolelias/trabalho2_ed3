@@ -246,6 +246,12 @@ void caminhoMaisCurto(char *arq1) {
     for(int i = 0; i < n; i++) {
        scanf("%s %s", tecOrigem, tecDestino);
 
+       // Removendo as aspas
+        memmove(tecOrigem, tecOrigem + 1, strlen(tecOrigem) - 2);
+        tecOrigem[strlen(tecOrigem) - 2] = '\0';
+        memmove(tecDestino, tecDestino + 1, strlen(tecDestino) - 2);
+        tecDestino[strlen(tecDestino) - 2] = '\0';
+
         int distancia = algoritmoDijkstra(grafo, tecOrigem, tecDestino);
         
         printf("%s %s: ", tecOrigem, tecDestino);
