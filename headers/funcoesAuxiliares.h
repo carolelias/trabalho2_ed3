@@ -107,19 +107,31 @@ void liberaGrafo(Grafo *grafo);
 
 void imprimeTecAresta(Aresta *a);
 
-void preenche_ordem(Grafo* grafo, Stack* stack, int passou[], int i);
+// void preenche_ordem(Grafo* grafo, Stack* stack, int passou[], int i);
 
-void DFS(Grafo* grafo, int passou[], int i);
+// void DFS(Grafo* grafo, int passou[], int i);
 
-Vertice addVerticeOrigem(char *nomeTecnologia, int grupo);
+// Vertice addVerticeOrigem(char *nomeTecnologia, int grupo);
+
+// int encontrarOuCriarVertice(Grafo *grafo, char *nomeTecnologia);
+
+// void adicionarAresta(Grafo *grafo, int verticeOrigem, char *nomeTecnologiaDestino, int peso, int grupo);
+
+// void DFS(Grafo* grafo,int passou[], int v);
+
+int verificaConexo(Grafo *grafo);
+
+// int getIndexFromName(Vertice *vertices, char *name);
 
 int encontrarOuCriarVertice(Grafo *grafo, char *nomeTecnologia);
 
-void adicionarAresta(Grafo *grafo, int verticeOrigem, char *nomeTecnologiaDestino, int peso, int grupo);
+void addEdge(Grafo* graph, char *src, char *dest);
 
-void DFS(Grafo* grafo,int passou[], int v);
+void DFSUtil(Vertice *vertices, int vertex, int visited[], Stack* stack, Grafo* grafo);
 
-int verificaConexo(Grafo *grafo);
+Grafo* getTranspose(Grafo* graph);
+
+void DFS(Vertice *vertices, int vertex, int visited[]);
 
 // descobre a menor distância entre dois vértices de um grafo
 int algoritmoDijkstra(Grafo *grafo, char *tecOrigem, char *tecDestino);

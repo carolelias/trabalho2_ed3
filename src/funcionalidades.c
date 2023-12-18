@@ -203,7 +203,7 @@ void conexoGrafo(char *arq1){
         }
     }
 
-    // função para verificar se o grafo é fortemente conexo
+    //função para verificar se o grafo é fortemente conexo
     int aux = verificaConexo(grafo);
 
     if(aux == 1){
@@ -270,14 +270,14 @@ void caminhoMaisCurto(char *arq1) {
         memmove(tecDestino, tecDestino + 1, strlen(tecDestino) - 2);
         tecDestino[strlen(tecDestino) - 2] = '\0';
 
-        int distancia = algoritmoDijkstra(grafo, tecOrigem, tecDestino);
+        // int distancia = algoritmoDijkstra(grafo, tecOrigem, tecDestino);
         
-        printf("%s %s: ", tecOrigem, tecDestino);
-        if(distancia == -1){
-            printf("CAMINHO INEXISTENTE.\n");
-        } else {
-            printf("%d", distancia);
-        } 
+        // printf("%s %s: ", tecOrigem, tecDestino);
+        // if(distancia == -1){
+        //     printf("CAMINHO INEXISTENTE.\n");
+        // } else {
+        //     printf("%d", distancia);
+        // } 
     }
     
     
