@@ -30,7 +30,7 @@ int main() {
         break;
     case 11:
         scanf("%s", arq1);
-        conexoGrafo(arq1);
+        //conexoGrafo(arq1);
         break;     
     case 12:
         scanf("%s", arq1);

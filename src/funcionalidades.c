@@ -170,56 +170,56 @@ void pesquisaGrafo(char *arq1, int n){
 
 }
 
-//funcionalidade 11
-void conexoGrafo(char *arq1){
+// //funcionalidade 11
+// void conexoGrafo(char *arq1){
 
-    // Abrindo o arquivo de dados
-    FILE *p = fopen(arq1, "r");
-    if(p == NULL){
-        printf("Falha na execucao da funcionalidade.");
-        return;
-    }
+//     // Abrindo o arquivo de dados
+//     FILE *p = fopen(arq1, "r");
+//     if(p == NULL){
+//         printf("Falha na execucao da funcionalidade.");
+//         return;
+//     }
 
-    // Alocamos espaço para um struct do arquivo de dados
-    ArquivoDados *entrada = malloc(sizeof(ArquivoDados));
+//     // Alocamos espaço para um struct do arquivo de dados
+//     ArquivoDados *entrada = malloc(sizeof(ArquivoDados));
 
-    // Definindo o ponteiro para o arquivo de entrada 
-    entrada->p = p;
-    leRegistroCabecalho(entrada);
+//     // Definindo o ponteiro para o arquivo de entrada 
+//     entrada->p = p;
+//     leRegistroCabecalho(entrada);
 
-    Registro *rAux = malloc(sizeof(Registro));
-    char *cAux = malloc(sizeof(char));
+//     Registro *rAux = malloc(sizeof(Registro));
+//     char *cAux = malloc(sizeof(char));
 
-    // Criando o grafo
-    Grafo *grafo = criaGrafo();
+//     // Criando o grafo
+//     Grafo *grafo = criaGrafo();
 
-    //Lendo os registros do arquivo de dados
-    for(int i = 0; i < entrada->rC.proxRRN; i++) {
-        if(leRegistroBinario(entrada->p, rAux, cAux, i) == 0) {
-            // Se nenhuma das tecnologias for nula, adiciona o registro no grafo
-            if((rAux->nomeTecOrigem.tam != 0 && rAux->nomeTecDestino.tam != 0) && (rAux->nomeTecOrigem.nome[0] != '$' && rAux->nomeTecDestino.nome[0] != '$')) {
-                adicionaRegistroTransposto(rAux, grafo);
-            }
-        }
-    }
+//     //Lendo os registros do arquivo de dados
+//     for(int i = 0; i < entrada->rC.proxRRN; i++) {
+//         if(leRegistroBinario(entrada->p, rAux, cAux, i) == 0) {
+//             // Se nenhuma das tecnologias for nula, adiciona o registro no grafo
+//             if((rAux->nomeTecOrigem.tam != 0 && rAux->nomeTecDestino.tam != 0) && (rAux->nomeTecOrigem.nome[0] != '$' && rAux->nomeTecDestino.nome[0] != '$')) {
+//                 adicionaRegistroTransposto(rAux, grafo);
+//             }
+//         }
+//     }
 
-    //função para verificar se o grafo é fortemente conexo
-    int aux = verificaConexo(grafo);
+//     //função para verificar se o grafo é fortemente conexo
+//     int aux = verificaConexo(grafo);
 
-    if(aux == 1){
-        printf("Sim, o grafo e fortemente conexo e possui %d componente.\n", aux);
-    }else{
-        printf("Nao, o grafo nao e fortemente conexo e possui %d componentes.\n", aux);
-    }
+//     if(aux == 1){
+//         printf("Sim, o grafo e fortemente conexo e possui %d componente.\n", aux);
+//     }else{
+//         printf("Nao, o grafo nao e fortemente conexo e possui %d componentes.\n", aux);
+//     }
 
-    liberaGrafo(grafo); // desaloca todas as estruturas do grafo (ele mesmo, seus vértices, arestas, ...)
-    free(cAux);
-    free(rAux);
-    free(entrada);
-    fclose(p);  // fecha o arquivo binário
+//     liberaGrafo(grafo); // desaloca todas as estruturas do grafo (ele mesmo, seus vértices, arestas, ...)
+//     free(cAux);
+//     free(rAux);
+//     free(entrada);
+//     fclose(p);  // fecha o arquivo binário
 
 
-}
+// }
 
 
 //funcionalidade 12
@@ -254,6 +254,7 @@ void caminhoMaisCurto(char *arq1) {
         }
     }  
 
+
     // Lendo as tecnologias de origem e destino
     char tecOrigem[20];
     char tecDestino[20];
@@ -262,22 +263,22 @@ void caminhoMaisCurto(char *arq1) {
     scanf("%d", &n);
 
     for(int i = 0; i < n; i++) {
-       scanf("%s %s", tecOrigem, tecDestino);
+        scanf("%s %s", tecOrigem, tecDestino);
 
-       // Removendo as aspas
+        // Removendo as aspas
         memmove(tecOrigem, tecOrigem + 1, strlen(tecOrigem) - 2);
         tecOrigem[strlen(tecOrigem) - 2] = '\0';
         memmove(tecDestino, tecDestino + 1, strlen(tecDestino) - 2);
         tecDestino[strlen(tecDestino) - 2] = '\0';
 
-        // int distancia = algoritmoDijkstra(grafo, tecOrigem, tecDestino);
+        int distancia = algoritmoDijkstra(grafo, tecOrigem, tecDestino);
         
-        // printf("%s %s: ", tecOrigem, tecDestino);
-        // if(distancia == -1){
-        //     printf("CAMINHO INEXISTENTE.\n");
-        // } else {
-        //     printf("%d", distancia);
-        // } 
+        printf("%s %s: ", tecOrigem, tecDestino);
+        if(distancia < 0){
+            printf("CAMINHO INEXISTENTE.\n");
+        } else {
+            printf("%d\n", distancia);
+        } 
     }
     
     

@@ -745,8 +745,8 @@ int pop(Stack* stack) {
 // }
 //--------------------------------------------------------
 
-Vertice *buscaVerticeIndex(Vertice *v, char *nomeTec, int index) {
-    index++;
+Vertice *buscaVerticeIndex(Vertice *v, char *nomeTec, int *index) {
+    //*index += 1;
 
     // Se o nome da tecnologia do vértice for maior que a tecnologia buscada
     if(strcmp(v->nomeTec, nomeTec) > 0) {
@@ -779,217 +779,257 @@ Vertice *buscaVerticeIndex(Vertice *v, char *nomeTec, int index) {
 }
 
 // Função para encontrar ou criar um vértice com o nome especificado
-int encontrarOuCriarVertice(Grafo *grafo, char *nomeTecnologia) {
-    // Buscar o vértice no grafo
-    Vertice *v = buscaVertice(grafo->primeiroElem, nomeTecnologia);
-    //se existir o vértice, retorna o índice dele
-    if(v != NULL || strcmp(v->nomeTec, nomeTecnologia) == 0 || v->listaLinear != NULL){
-        int *index;
-        int i = buscaVerticeIndex(grafo->primeiroElem, nomeTecnologia, &index);
-        return i;
-    } else{
-        // Vértice não encontrado, criar um novo
-        grafo->numVertices++;
-        grafo->primeiroElem = (Vertice *)realloc(grafo->primeiroElem, grafo->numVertices * sizeof(Vertice));
-        int novoIndice = grafo->numVertices - 1;
-        grafo->primeiroElem[novoIndice].nomeTec= strdup(nomeTecnologia);
+// int encontrarOuCriarVertice(Grafo *grafo, char *nomeTecnologia) {
+//     // Buscar o vértice no grafo
+//     Vertice *v = buscaVertice(grafo->primeiroElem, nomeTecnologia);
+//     //se existir o vértice, retorna o índice dele
+//     if(v != NULL || strcmp(v->nomeTec, nomeTecnologia) == 0 || v->listaLinear != NULL){
+//         // int *index = malloc(sizeof(int));
+//         // int i = buscaVerticeIndex(grafo->primeiroElem, nomeTecnologia, index);
+//         return i;
+//     } else{
+//         // Vértice não encontrado, criar um novo
+//         grafo->numVertices++;
+//         grafo->primeiroElem = (Vertice *)realloc(grafo->primeiroElem, grafo->numVertices * sizeof(Vertice));
+//         int novoIndice = grafo->numVertices - 1;
+//         grafo->primeiroElem[novoIndice].nomeTec= strdup(nomeTecnologia);
         
-        // Inicializar os campos do novo vértice
-        grafo->primeiroElem->grupo = -4;
-        grafo->primeiroElem->grauEntrada = 0;
-        grafo->primeiroElem->grauSaida = 0;
-        grafo->primeiroElem->grau = 0;
-        grafo->primeiroElem->listaLinear = NULL;
-        grafo->primeiroElem->proxElem = 0;
+//         // Inicializar os campos do novo vértice
+//         grafo->primeiroElem->grupo = -4;
+//         grafo->primeiroElem->grauEntrada = 0;
+//         grafo->primeiroElem->grauSaida = 0;
+//         grafo->primeiroElem->grau = 0;
+//         grafo->primeiroElem->listaLinear = NULL;
+//         grafo->primeiroElem->proxElem = 0;
 
-        return novoIndice;
-    }
-}
+//         return novoIndice;
+//     }
+// }
 
 
 
 
 // Adicionar uma aresta direcionada entre dois vértices no grafo.
-void addEdge(Grafo* graph, char *src, char *dest) {
-    int srcIndex = buscaVertice(graph->primeiroElem, src) - graph->primeiroElem;
-    int destIndex = buscaVertice(graph->primeiroElem, dest) - graph->primeiroElem;
+// void addEdge(Grafo* graph, char *src, char *dest) {
+//     int srcIndex = buscaVertice(graph->primeiroElem, src) - graph->primeiroElem;
+//     int destIndex = buscaVertice(graph->primeiroElem, dest) - graph->primeiroElem;
 
-    if (srcIndex >= 0 && destIndex >= 0) {
-        Aresta* newEdge = (Aresta*)malloc(sizeof(Aresta));
-        newEdge->nomeTecDestino = strdup(dest);
-        newEdge->peso = 1; // Ajuste conforme necessário
-        newEdge->proxAresta = graph->primeiroElem[srcIndex].listaLinear;
-        graph->primeiroElem[srcIndex].listaLinear = newEdge;
-    } else {
-        fprintf(stderr, "Erro: Vértice de origem ou destino não encontrado ao adicionar aresta.\n");
-    }
-}
+//     if (srcIndex >= 0 && destIndex >= 0) {
+//         Aresta* newEdge = (Aresta*)malloc(sizeof(Aresta));
+//         newEdge->nomeTecDestino = strdup(dest);
+//         newEdge->peso = 1; // Ajuste conforme necessário
+//         newEdge->proxAresta = graph->primeiroElem[srcIndex].listaLinear;
+//         graph->primeiroElem[srcIndex].listaLinear = newEdge;
+//     } else {
+//         fprintf(stderr, "Erro: Vértice de origem ou destino não encontrado ao adicionar aresta.\n");
+//     }
+// }
 
 // Gerar o grafo transposto, que é um grafo resultante da inversão das direções de todas as arestas do grafo original.
-Grafo* getTranspose(Grafo* graph) {
-    Grafo* transpose = (Grafo*)malloc(sizeof(Grafo));
-    transpose->numVertices = graph->numVertices;
-    transpose->numArestas = graph->numArestas;
-    transpose->primeiroElem = (Vertice*)malloc(graph->numVertices * sizeof(Vertice));
+// Grafo* getTranspose(Grafo* graph) {
+//     Grafo* transpose = (Grafo*)malloc(sizeof(Grafo));
+//     transpose->numVertices = graph->numVertices;
+//     transpose->numArestas = graph->numArestas;
+//     transpose->primeiroElem = (Vertice*)malloc(graph->numVertices * sizeof(Vertice));
 
-    for (int i = 0; i < graph->numVertices; ++i) {
-        transpose->primeiroElem[i].nomeTec = graph->primeiroElem[i].nomeTec;
-        transpose->primeiroElem[i].listaLinear = NULL;
-        transpose->primeiroElem[i].proxElem = NULL;
-    }
+//     for (int i = 0; i < graph->numVertices; ++i) {
+//         transpose->primeiroElem[i].nomeTec = graph->primeiroElem[i].nomeTec;
+//         transpose->primeiroElem[i].listaLinear = NULL;
+//         transpose->primeiroElem[i].proxElem = NULL;
+//     }
 
-    for (int v = 0; v < graph->numVertices; ++v) {
-        Aresta* current = graph->primeiroElem[v].listaLinear;
-        while (current != NULL) {
-            Vertice* destinationVertex = buscaVertice(transpose->primeiroElem, current->nomeTecDestino);
+//     for (int v = 0; v < graph->numVertices; ++v) {
+//         Aresta* current = graph->primeiroElem[v].listaLinear;
+//         while (current != NULL) {
+//             Vertice* destinationVertex = buscaVertice(transpose->primeiroElem, current->nomeTecDestino);
 
-            if (destinationVertex != NULL) {
-                Aresta* newEdge = (Aresta*)malloc(sizeof(Aresta));
-                newEdge->nomeTecDestino = strdup(graph->primeiroElem[v].nomeTec);
-                newEdge->peso = 1; // Ajuste conforme necessário
-                newEdge->proxAresta = destinationVertex->listaLinear;
-                destinationVertex->listaLinear = newEdge;
-            } else {
-                fprintf(stderr, "Erro: Vértice de destino não encontrado ao adicionar aresta invertida.\n");
-            }
+//             if (destinationVertex != NULL) {
+//                 Aresta* newEdge = (Aresta*)malloc(sizeof(Aresta));
+//                 newEdge->nomeTecDestino = strdup(graph->primeiroElem[v].nomeTec);
+//                 newEdge->peso = 1; // Ajuste conforme necessário
+//                 newEdge->proxAresta = destinationVertex->listaLinear;
+//                 destinationVertex->listaLinear = newEdge;
+//             } else {
+//                 fprintf(stderr, "Erro: Vértice de destino não encontrado ao adicionar aresta invertida.\n");
+//             }
 
-            current = current->proxAresta;
-        }
-    }
+//             current = current->proxAresta;
+//         }
+//     }
 
-    return transpose;
-}
+//     return transpose;
+// }
 
-// Função auxiliar para a busca em profundidade (DFS).
-void DFSUtil(Vertice *vertices, int vertex, int visited[], Stack* stack, Grafo* grafo) {
-    visited[vertex] = 1;
-    Aresta *current = vertices[vertex].listaLinear;
+// // Função auxiliar para a busca em profundidade (DFS).
+// void DFSUtil(Vertice *vertices, int vertex, int visited[], Stack* stack, Grafo* grafo) {
+//     visited[vertex] = 1;
+//     Aresta *current = vertices[vertex].listaLinear;
 
-    while (current != NULL) {
-        int destino = encontrarOuCriarVertice(grafo, current->nomeTecDestino);
-        if (!visited[destino]) {
-            DFSUtil(vertices, destino, visited, stack, grafo);
-        }
-        current = current->proxAresta;
-    }
-    push(stack, vertex);
-}
+//     while (current != NULL) {
+//         int destino = encontrarOuCriarVertice(grafo, current->nomeTecDestino);
+//         if (!visited[destino]) {
+//             DFSUtil(vertices, destino, visited, stack, grafo);
+//         }
+//         current = current->proxAresta;
+//     }
+//     push(stack, vertex);
+// }
 
 // Inicia a busca em profundidade a partir de um vértice específico.
-void DFS(Vertice *vertices, int vertex, int visited[]) {
-    visited[vertex] = 1;
-    printf("%s ", vertices[vertex].nomeTec);
+// void DFS(Vertice *vertices, int vertex, int visited[]) {
+//     visited[vertex] = 1;
+//     printf("%s ", vertices[vertex].nomeTec);
 
-    Aresta *current = vertices[vertex].listaLinear;
-    while (current != NULL) {
-        int destinationIndex = buscaVertice(vertices, current->nomeTecDestino) - vertices;
-        if (!visited[destinationIndex])
-            DFS(vertices, destinationIndex, visited);
-        current = current->proxAresta;
-    }
-}
+//     Aresta *current = vertices[vertex].listaLinear;
+//     while (current != NULL) {
+//         int destinationIndex = buscaVertice(vertices, current->nomeTecDestino) - vertices;
+//         if (!visited[destinationIndex])
+//             DFS(vertices, destinationIndex, visited);
+//         current = current->proxAresta;
+//     }
+// }
 
 // Função que verifica se o grafo é conexo
-int verificaConexo(Grafo *graph){
-    Stack* stack = (Stack*)malloc(sizeof(Stack));
-    stack->array = (int*)malloc(graph->numVertices * sizeof(int));
-    stack->top = -1;
+// int verificaConexo(Grafo *graph){
+//     Stack* stack = (Stack*)malloc(sizeof(Stack));
+//     stack->array = (int*)malloc(graph->numVertices * sizeof(int));
+//     stack->top = -1;
 
-    int* visited = (int*)malloc(graph->numVertices * sizeof(int));
+//     int* visited = (int*)malloc(graph->numVertices * sizeof(int));
 
-    for (int i = 0; i < graph->numVertices; ++i)
-        visited[i] = 0;
+//     for (int i = 0; i < graph->numVertices; ++i)
+//         visited[i] = 0;
 
-    // Realiza a primeira passagem do algoritmo de Kosaraju
-    for (int i = 0; i < graph->numVertices; ++i) {
-        if (!visited[i])
-            DFSUtil(graph->primeiroElem, i, visited, stack, graph);
+//     // Realiza a primeira passagem do algoritmo de Kosaraju
+//     for (int i = 0; i < graph->numVertices; ++i) {
+//         if (!visited[i])
+//             DFSUtil(graph->primeiroElem, i, visited, stack, graph);
+//     }
+
+//     Grafo* transpose = getTranspose(graph);
+
+//     for (int i = 0; i < graph->numVertices; ++i)
+//         visited[i] = 0;
+
+//     while (!isEmpty(stack)) {
+//         int vertex = pop(stack);
+//         if (!visited[vertex]) {
+//             DFS(transpose->primeiroElem, vertex, visited);
+//             printf("\n");
+//         }
+//     }
+
+//     free(visited);
+//     free(stack);
+
+
+//     free(stack->array);
+//     free(stack);
+
+//     return 0;
+// }
+
+
+void achaMenor(estruturaAux *aux, int numVertices, int *min, int *indiceMin) {
+    // Achando o vértice com a menor distância
+    for(int i = 0; i < numVertices; i ++) {
+        if(aux[i].visitado == 0) {
+            if(aux[i].distancia < *min) {
+                *indiceMin = i;
+                *min = aux[i].distancia;
+            }
+        }
+    }
+}
+    
+
+//Função para encontrar o índice do vértice com a menor distância ainda não incluído no caminho mínimo
+int menorDistancia(int index, estruturaAux *aux, int numVertices) {
+    int min = INFINITO;
+    int indiceMin = -1;
+    
+    if(aux[index].v.listaLinear == NULL) {
+        return -1;
     }
 
-    Grafo* transpose = getTranspose(graph);
+    Aresta a = *aux[index].v.listaLinear;
+    for(int i = 0; i < aux[index].v.grauSaida; i++) {
+        for(int j = 0; j < numVertices; j ++) {
+            // Se o vértice de index j for adjacente ao vertice w
+            if(strcmp(a.nomeTecDestino, aux[j].v.nomeTec) == 0) {
+                if(aux[j].distancia > a.peso + aux[index].distancia)
+                    aux[j].distancia = a.peso + aux[index].distancia;
+            }
+        }
 
-    for (int i = 0; i < graph->numVertices; ++i)
-        visited[i] = 0;
+        if(i != aux[index].v.grauSaida - 1)
+            a = *a.proxAresta;
+    }
 
-    while (!isEmpty(stack)) {
-        int vertex = pop(stack);
-        if (!visited[vertex]) {
-            DFS(transpose->primeiroElem, vertex, visited);
-            printf("\n");
+    // Achando o vértice com a menor distância
+    achaMenor(aux, numVertices, &min, &indiceMin);
+
+    aux[indiceMin].visitado = 1;
+    return indiceMin;
+}
+
+//Retorna a menor distância entre dois vértices. Se eles não forem conectados, retorna -1
+int algoritmoDijkstra(Grafo *grafo, char *tecOrigem, char *tecDestino) {
+    estruturaAux *aux = malloc(grafo->numVertices * sizeof(estruturaAux));
+
+    int indexOrigem = -1;
+    int indexDestino = -1;
+
+    // Primeiro vértice do grafo
+    Vertice v = *grafo->primeiroElem;
+
+    for (int i = 0; i < grafo->numVertices; i++) {
+        aux[i].distancia = INFINITO; // distância "infinita"
+        aux[i].visitado = 0;        // nenhum vértice foi "adicionado"/"visitado" ainda
+        
+        aux[i].v = v;   // "copia" os vértices do grafo na estrutura auxiliar
+
+        // verifica se ainda não chegou no fim dos vértices. Se não, passa para o próx vértice
+        if(i != grafo->numVertices - 1)
+            v = *v.proxElem;
+
+        if(strcmp(aux[i].v.nomeTec, tecOrigem) == 0) {
+            indexOrigem = i;    // acha o índice do vértice da tecnologia de origem
+        }
+        if(strcmp(aux[i].v.nomeTec, tecDestino) == 0) {
+            indexDestino = i;   // acha o índice do vértice da tecnologia de destino
         }
     }
 
-    free(visited);
-    free(stack);
+    // Se a tecnologia de origem ou destino não existe no grafo
+    if(indexOrigem == -1 || indexDestino == -1) {
+        free(aux);
+        return -1;
+    }
 
+    //printf("\naqui");
 
-    free(stack->array);
-    free(stack);
+    // Primeiro vértice a ser adicionado na lista de visitados é o da tecnologia de origem
+    v = aux[indexOrigem].v;
+    aux[indexOrigem].distancia = 0;     // distância da origem até a origem é 0
+    aux[indexOrigem].visitado = 1;
 
-    return 0;
+    int index = indexOrigem;
+    for(int i = 0; i < grafo->numVertices - 1; i++) {
+        index = menorDistancia(index, aux, grafo->numVertices);
+        if(index == -1) {
+            int min, indiceMin;
+            achaMenor(aux, grafo->numVertices, &min, &indiceMin);
+            aux[indiceMin].visitado = 1;
+            index = indiceMin;
+        }
+    }
+
+    int distancia = aux[indexDestino].distancia;
+
+    if(distancia != INFINITO) {
+        return distancia;
+    } else {
+        return -1;
+    }
 }
-
-// Função para encontrar o índice do vértice com a menor distância ainda não incluído no caminho mínimo
-// int menorDistancia(estruturaAux *aux, int numVertices) {
-//     int min = INT_MAX;
-//     int indiceMin;
-//     for (int i = 0; i < numVertices; i++) {
-//         if (aux[i].visitado == 0 && aux[i].distancia <= min) {
-//             min = aux[i].distancia;
-//             indiceMin = i;
-//         }
-//     }
-//     return indiceMin;
-// }
-
-// Retorna a menor distância entre dois vértices. Se eles não forem conectados, retorna -1
-// int algoritmoDijkstra(Grafo *grafo, char *tecOrigem, char *tecDestino) {
-//     estruturaAux *aux = malloc(grafo->numVertices * sizeof(estruturaAux));
-
-//     int indexOrigem = -1;
-//     int indexDestino = -1;
-
-//     Vertice v = *grafo->primeiroElem;
-//     for (int i = 0; i < grafo->numVertices; i++) {
-//         aux[i].distancia = INT_MAX;
-//         aux[i].visitado = 0;
-
-//         aux[i].v = v;
-//         v = *v.proxElem;
-
-//         if(strcmp(aux[i].v.nomeTec, tecOrigem) == 0) {
-//             indexOrigem = i;
-//         }
-//         if(strcmp(aux[i].v.nomeTec, tecDestino) == 0) {
-//             indexDestino = i;
-//         }
-//     }
-
-//     if(indexOrigem == -1 || indexDestino == -1) {
-//         return -1;
-//     }
-
-//     Vertice *vertices = grafo->primeiroElem;
-//     for(int i = 0; i < grafo->numVertices - 1; i++) {
-//         int u = menorDistancia(aux, grafo->numVertices);
-//         aux[u].visitado = 1;
-
-//         vertices = grafo->primeiroElem;
-//         for (int j = 0; j < grafo->numVertices; j++) {
-//             Aresta *aresta = vertices->listaLinear;
-//             while (aresta != NULL) {
-//                 if (!aux[j].visitado && aresta->nomeTecDestino != NULL && strcmp(vertices->nomeTec, tecOrigem) != 0 && aux[u].distancia != INT_MAX && aux[u].distancia + aresta->peso < aux[j].distancia) {
-//                     aux[j].distancia = aux[u].distancia + aresta->peso;
-//                 }
-//                 aresta = aresta->proxAresta;
-//             }
-//             vertices = vertices->proxElem;
-//         }
-//     }
-
-//     if(aux->distancia[tecDestino] != INT_MAX) {
-//         return aux->distancia[tecDestino];
-//     } else {
-//         return -1;
-//     }
-// }

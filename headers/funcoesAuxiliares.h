@@ -11,6 +11,7 @@
 #define TAM_CAMPOS_FIXO 21  //tamanho total dos campos de tamanho fixo
 #define TAM_CABECALHO 13 //tamanho do registro de cabeçalho
 #define OFFSET_TAM_ORIGEM(RRN) TAM_CABECALHO + 76*RRN + 13
+#define INFINITO 2147483647
 
 
 // struct do registro de cabeçalho do arquivo de dados
